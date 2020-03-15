@@ -9,7 +9,7 @@ public class Peer implements InterfacePeer {
         System.out.println("  > File path: " + file_path);
         System.out.println("  > Replication Degree: " + replication_degree);
 
-        //TODO: make this fields correct
+        //TODO: make these fields correct
         BackUpProtocol backUpProtocol = new BackUpProtocol(1.0, 1, 1, replication_degree, null);
 
     }

@@ -1,15 +1,18 @@
 package com.assigment_1;
 
-
 import com.assigment_1.Protocol.MultiCastBackUpChannel;
-import com.assigment_1.Protocol.MultiCastChannel;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class Peer implements InterfacePeer {
-    MultiCastBackUpChannel MDB;
+    private String id;
+    private Double version;
 
-    public Peer(String MCAddress, int MCPort, String MDBAddress, int MDBPort, String MDRAddress, int MDRPort) {
+    public Peer(Double version, String id, String MCAddress, int MCPort, String MDBAddress, int MDBPort, String MDRAddress, int MDRPort) {
 
-        MDB = new MultiCastBackUpChannel(MDBAddress, MDBPort);
+        this.version = version;
+        this.id = id;
     }
 
     @Override

@@ -11,14 +11,12 @@ public class TestClientHandler {
 
     public TestClientHandler(String rmi_peer_ap) {
 
-        Registry reg = null;
+        Registry reg;
         try {
             reg = LocateRegistry.getRegistry();
             this.peer = (InterfacePeer) reg.lookup(rmi_peer_ap);
 
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (NotBoundException e) {
+        } catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
         }
     }
@@ -31,7 +29,11 @@ public class TestClientHandler {
             return false;
         }
 
-        peer.backup(arguments[0], Integer.parseInt(arguments[1]));
+        try {
+            peer.backup(arguments[0], Integer.parseInt(arguments[1]));
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
 
         return true;
     }

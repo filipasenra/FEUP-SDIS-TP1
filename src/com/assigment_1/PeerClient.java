@@ -50,9 +50,9 @@ public class PeerClient {
         try {
             InterfacePeer peer = (InterfacePeer) UnicastRemoteObject.exportObject(obj, 0);
             Registry rmiReg  = LocateRegistry.getRegistry();
-            rmiReg.bind(remote_object_name, peer);
+            rmiReg.rebind(remote_object_name, peer);
 
-        } catch (RemoteException | AlreadyBoundException e) {
+        } catch (RemoteException  e) {
             e.printStackTrace();
         }
 

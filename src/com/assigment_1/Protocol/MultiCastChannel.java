@@ -33,6 +33,8 @@ public class MultiCastChannel implements Runnable {
             DatagramPacket msgPacket = new DatagramPacket(chunk, chunk.length, this.address, this.port);
             senderSocket.send(msgPacket);
 
+            System.out.println("SENDING CHUNK");
+
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -57,6 +59,7 @@ public class MultiCastChannel implements Runnable {
                 DatagramPacket msgPacket = new DatagramPacket(buffer, buffer.length);
                 receiverSocket.receive(msgPacket);
 
+                System.out.println("RECEIVED CHUNK: " + msgPacket.toString());
                 //TODO: execute action
             }
         } catch (IOException ex) {

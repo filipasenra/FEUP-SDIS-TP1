@@ -3,6 +3,7 @@ package com.assigment_1;
 import com.assigment_1.Protocol.MultiCastBackUpChannel;
 
 import java.rmi.AlreadyBoundException;
+import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -52,7 +53,7 @@ public class PeerClient {
             Registry rmiReg  = LocateRegistry.getRegistry();
             rmiReg.rebind(remote_object_name, peer);
 
-        } catch (RemoteException  e) {
+        } catch (RemoteException e) {
             e.printStackTrace();
         }
 

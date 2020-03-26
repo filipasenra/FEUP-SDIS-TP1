@@ -13,7 +13,9 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class PeerClient {
 
+    private static String id;
     private static MultiCastBackUpChannel MDB;
+    private static Storage storage = new Storage(100); ///TODO: change 100
 
     private static ScheduledThreadPoolExecutor exec = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(250);
 
@@ -37,7 +39,7 @@ public class PeerClient {
         }
 
         Double version = Double.parseDouble(args[0]);
-        String id = args[1];
+        id = args[1];
         String remote_object_name = args[2];
         String MCAddress = args[3];
         int MCPort = Integer.parseInt(args[4]);
@@ -61,5 +63,13 @@ public class PeerClient {
         System.out.println("Peer ready");
 
         return true;
+    }
+
+    public static String getId() {
+        return id;
+    }
+
+    public static Storage getStorage() {
+        return storage;
     }
 }

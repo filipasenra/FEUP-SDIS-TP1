@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Storage implements Serializable {
 
-    private ArrayList<Chunk> storedChunks;
+    private ArrayList<Chunk> storedChunks = new ArrayList<>();
 
     private int overallSpace;
     private int occupiedSpace = 0;

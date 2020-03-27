@@ -1,5 +1,6 @@
 package com.assigment_1;
 
+import com.assigment_1.PeerClient;
 import com.assigment_1.Protocol.MultiCastBackUpChannel;
 
 import java.rmi.AlreadyBoundException;
@@ -11,11 +12,19 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
+
+// make in root:
+// javac -d out com/assigment_1/Protocol/*.java
+// javac -d out com/assigment_1/*.java
+// in out:
+//rmiregistry &
+//java com.assigment_1.PeerClient 2.0 1 Peer1 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
+
 public class PeerClient {
 
     private static String id;
     private static MultiCastBackUpChannel MDB;
-    private static Storage storage = new Storage(100); ///TODO: change 100
+    private static Storage storage = new Storage(100000); ///TODO: change 100
 
     private static ScheduledThreadPoolExecutor exec = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(250);
 
@@ -71,5 +80,9 @@ public class PeerClient {
 
     public static Storage getStorage() {
         return storage;
+    }
+
+    public static ScheduledThreadPoolExecutor getExec() {
+        return exec;
     }
 }

@@ -5,6 +5,8 @@ import java.net.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
+import com.assigment_1.PeerClient;
+
 public class MultiCastChannel implements Runnable {
 
     protected final static int sizeOfChunks = 64000;
@@ -58,9 +60,8 @@ public class MultiCastChannel implements Runnable {
             while (true) {
                 DatagramPacket msgPacket = new DatagramPacket(buffer, buffer.length);
                 receiverSocket.receive(msgPacket);
-
-                System.out.println("RECEIVED CHUNK: " + msgPacket.toString());
-                //TODO: execute action
+                
+                PeerClient.getExec().execute(new ReceivedMessagesHandler(buffer));
             }
         } catch (IOException ex) {
             ex.printStackTrace();

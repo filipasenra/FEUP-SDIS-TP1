@@ -1,1 +1,8 @@
-out/
+# Compiled class file
+*.class
+
+#intelliJ stuff
+.iml
+.idea
+
+

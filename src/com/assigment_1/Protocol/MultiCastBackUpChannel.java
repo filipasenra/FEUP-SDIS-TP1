@@ -23,7 +23,7 @@ public class MultiCastBackUpChannel extends MultiCastChannel {
         ){
             int chunkNr = 0;
             int bytesAmount;
-            byte[] buffer = new byte[sizeOfChunks];
+            byte[] buffer = new byte[com.assigment_1.Protocol.MultiCastChannel.sizeOfChunks];
             String fileID = this.generateId(file.getName(), file.lastModified(), file.getParent());
 
             while ((bytesAmount = bis.read(buffer)) > 0) {

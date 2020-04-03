@@ -23,8 +23,8 @@ public class ReceivedMessagesHandler implements Runnable {
             return;
         }
 
-        //Ignore our messages
-        if(PeerClient.getId() == messageFactory.senderId)
+        //A peer must never store the chunks of its own files.
+        if(PeerClient.getId().equals(messageFactory.senderId))
             return;
 
         switch (messageFactory.messageType) {

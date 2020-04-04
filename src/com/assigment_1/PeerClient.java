@@ -30,19 +30,9 @@ public class PeerClient {
     private static ScheduledThreadPoolExecutor exec = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(250);
 
     public static void main(String[] args) {
-
         if(!parseArgs(args))
             System.exit(-1);
-
-        executeMDB();
-        executeMC();
     }
-
-    private static void executeMDB(){
-        exec.execute(MDB);
-    }
-
-    private static void executeMC() {exec.execute(MC);}
 
     private static boolean parseArgs(String[] args) {
 
@@ -77,11 +67,18 @@ public class PeerClient {
 
         System.out.println("Peer ready");
 
+        exec.execute(MDB);
+        exec.execute(MC);
+
         return true;
     }
 
     public static MulticastControlChannel getMC() {
         return MC;
+    }
+
+    public static MultiCastBackUpChannel getMDB() {
+        return MDB;
     }
 
     public static String getId() {

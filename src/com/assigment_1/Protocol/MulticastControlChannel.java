@@ -1,6 +1,7 @@
 package com.assigment_1.Protocol;
 
-import java.util.Arrays;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class MulticastControlChannel extends MultiCastChannel {
     public MulticastControlChannel(String INETAddress, int port) {
@@ -10,6 +11,8 @@ public class MulticastControlChannel extends MultiCastChannel {
     public void confirmStore(double version, String senderId, String fileID, int chunkNo) {
         byte[] message = MessageFactory.createMessage(version, "STORED", senderId, fileID, chunkNo);
 
-        this.exec.execute(new Thread(() -> this.sendConfirmStore(message)));
+        Random random = new Random();
+
+        this.exec.schedule(new Thread(() -> this.sendConfirmStore(message)), random.nextInt(401), TimeUnit.MILLISECONDS);
     }
 }

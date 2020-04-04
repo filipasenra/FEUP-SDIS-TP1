@@ -7,7 +7,6 @@ import com.assigment_1.PeerClient;
 public class ReceivedMessagesHandler implements Runnable {
 
     MessageFactory messageFactory;
-
     byte[] message;
 
     public ReceivedMessagesHandler(byte[] message) {
@@ -34,6 +33,7 @@ public class ReceivedMessagesHandler implements Runnable {
                 break;
             case "STORED":
                 manageStored();
+                break;
             case "GETCHUNK":
                 //TODO
                 break;
@@ -56,11 +56,7 @@ public class ReceivedMessagesHandler implements Runnable {
 
         Chunk chunk = new Chunk(this.messageFactory.version, this.messageFactory.senderId, this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.replicationDeg, this.messageFactory.data);
 
-        if (PeerClient.getStorage().addChuckToStorage(chunk))
-        {
-            PeerClient.getMC().confirmStore(this.messageFactory.version, PeerClient.getId(), this.messageFactory.fileId, this.messageFactory.chunkNo);
-        };
-
+        PeerClient.getStorage().addChuckToStorage(chunk);
     }
 
     private void manageStored() {

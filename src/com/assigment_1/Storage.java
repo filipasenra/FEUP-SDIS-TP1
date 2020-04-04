@@ -17,17 +17,17 @@ public class Storage implements Serializable {
         this.overallSpace = overallSpace;
     }
 
-    public boolean addChuckToStorage(Chunk chunk) {
+    public void addChuckToStorage(Chunk chunk) {
 
         if ((this.overallSpace - this.occupiedSpace) < chunk.data.length) {
             System.out.println("Peer doesn't have space for chunk number " + chunk.chunkNo + " of " + chunk.fileId + " from " + chunk.senderId);
-            return false;
+            return;
         }
 
         this.storedChunks.add(chunk);
         this.occupiedSpace += chunk.data.length;
 
-        String filename = chunk.senderId + "/" + chunk.fileId + "_" + chunk.chunkNo;
+        String filename = PeerClient.getId() + "/" + chunk.fileId + "_" + chunk.chunkNo;
 
         File file = new File(filename);
         try {
@@ -39,11 +39,10 @@ public class Storage implements Serializable {
             FileOutputStream fos = new FileOutputStream(filename);
             fos.write(chunk.data);
 
-            //System.out.println("Sent " + "STORED " + chunk.version + " " + chunk.senderId + " " + chunk.fileId + " " + chunk.chunkNo);
-            return true;
+            //SEND CHUCK STORAGE CONFIRMATION MESSAGE
+            PeerClient.getMC().confirmStore(chunk.version, PeerClient.getId(), chunk.fileId, chunk.chunkNo);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return false;
     }
 }

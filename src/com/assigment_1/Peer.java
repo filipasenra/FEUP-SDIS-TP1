@@ -22,9 +22,9 @@ public class Peer implements InterfacePeer {
 
     @Override
     public void backup(String file_path, int replication_degree) {
-        System.out.println("> BACKUP SERVICE");
-        System.out.println("  > File path: " + file_path);
-        System.out.println("  > Replication Degree: " + replication_degree);
+        System.out.println("\nBACKUP SERVICE");
+        System.out.println(" > File path: " + file_path);
+        System.out.println(" > Replication Degree: " + replication_degree);
 
         exec.execute(new Thread(() -> MDB.backUpFile(this.version, this.id, file_path, replication_degree)));
     }

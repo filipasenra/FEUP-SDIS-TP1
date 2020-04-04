@@ -7,8 +7,6 @@ import java.util.Arrays;
 
 public class MultiCastBackUpChannel extends MultiCastChannel {
 
-    //<Version> PUTCHUNK <SenderId> <FileId> <ChunkNo> <ReplicationDeg> <CRLF><CRLF><Body>
-
     public MultiCastBackUpChannel(String INETAddress, int port) {
         super(INETAddress, port);
     }

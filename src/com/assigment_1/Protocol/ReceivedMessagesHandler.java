@@ -1,6 +1,7 @@
 package com.assigment_1.Protocol;
 
 import com.assigment_1.Chunk;
+import com.assigment_1.Peer;
 import com.assigment_1.PeerClient;
 
 public class ReceivedMessagesHandler implements Runnable {
@@ -23,7 +24,7 @@ public class ReceivedMessagesHandler implements Runnable {
             return;
         }
 
-        //A peer must never store the chunks of its own files.
+        //Ignore messages
         if(PeerClient.getId().equals(messageFactory.senderId))
             return;
 
@@ -32,7 +33,7 @@ public class ReceivedMessagesHandler implements Runnable {
                 managePutChunk();
                 break;
             case "STORED":
-                //TODO
+                manageStored();
             case "GETCHUNK":
                 //TODO
                 break;
@@ -51,11 +52,18 @@ public class ReceivedMessagesHandler implements Runnable {
     }
 
     private void managePutChunk() {
-
-        System.out.println("RECEIVED " + this.messageFactory.messageType + ": " + this.messageFactory.version + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo + " " + this.messageFactory.replicationDeg);
+        System.out.println("RECEIVED: " +  this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo + " " + this.messageFactory.replicationDeg);
 
         Chunk chunk = new Chunk(this.messageFactory.version, this.messageFactory.senderId, this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.replicationDeg, this.messageFactory.data);
-        PeerClient.getStorage().addChuckToStorage(chunk);
 
+        if (PeerClient.getStorage().addChuckToStorage(chunk))
+        {
+            PeerClient.getMC().confirmStore(this.messageFactory.version, PeerClient.getId(), this.messageFactory.fileId, this.messageFactory.chunkNo);
+        };
+
+    }
+
+    private void manageStored() {
+        System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
     }
 }

@@ -1,7 +1,7 @@
 package com.assigment_1;
 
 import com.assigment_1.PeerClient;
-import com.assigment_1.Protocol.MultiCastBackUpChannel;
+import com.assigment_1.Protocol.*;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.NoSuchObjectException;
@@ -24,6 +24,7 @@ public class PeerClient {
 
     private static String id;
     private static MultiCastBackUpChannel MDB;
+    public static MulticastControlChannel MC;
     private static Storage storage = new Storage(100000); ///TODO: change 100
 
     private static ScheduledThreadPoolExecutor exec = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(250);
@@ -34,11 +35,14 @@ public class PeerClient {
             System.exit(-1);
 
         executeMDB();
+        executeMC();
     }
 
     private static void executeMDB(){
         exec.execute(MDB);
     }
+
+    private static void executeMC() {exec.execute(MC);}
 
     private static boolean parseArgs(String[] args) {
 
@@ -57,7 +61,10 @@ public class PeerClient {
         String MDRAddress = args[7];
         int MDRPort = Integer.parseInt(args[8]);
 
-        Peer obj = new Peer(version, id, MCAddress,MCPort, MDBAddress,MDBPort, MDRAddress, MDRPort);
+        MDB = new MultiCastBackUpChannel(MDBAddress, MDBPort);
+        MC = new MulticastControlChannel(MCAddress, MCPort);
+
+        Peer obj = new Peer(version, id, MC, MDB, MDRAddress, MDRPort);
 
         try {
             InterfacePeer peer = (InterfacePeer) UnicastRemoteObject.exportObject(obj, 0);
@@ -68,10 +75,13 @@ public class PeerClient {
             e.printStackTrace();
         }
 
-        MDB = new MultiCastBackUpChannel(MDBAddress, MDBPort);
         System.out.println("Peer ready");
 
         return true;
+    }
+
+    public static MulticastControlChannel getMC() {
+        return MC;
     }
 
     public static String getId() {

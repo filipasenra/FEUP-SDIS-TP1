@@ -9,8 +9,8 @@ public class MultiCastBackUpChannel extends MultiCastChannel {
 
     //<Version> PUTCHUNK <SenderId> <FileId> <ChunkNo> <ReplicationDeg> <CRLF><CRLF><Body>
 
-    public MultiCastBackUpChannel(String INETaddress, int port) {
-        super(INETaddress, port);
+    public MultiCastBackUpChannel(String INETAddress, int port) {
+        super(INETAddress, port);
     }
 
     public void backUpFile(double version, String senderId, String filepath, int replicationDeg) {

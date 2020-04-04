@@ -42,6 +42,22 @@ public class MultiCastChannel implements Runnable {
         }
     }
 
+    public void sendConfirmStore(byte[] message) {
+
+        try {
+            //opening DatagramSocket to send confirm message
+            DatagramSocket senderSocket = new DatagramSocket();
+
+            DatagramPacket msgPacket = new DatagramPacket(message, message.length, this.address, this.port);
+            senderSocket.send(msgPacket);
+
+            System.out.println("SENDING CONFIRM MESSAGE");
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     //Listening
     @Override
     public void run() {

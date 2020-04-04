@@ -17,11 +17,11 @@ public class Storage implements Serializable {
         this.overallSpace = overallSpace;
     }
 
-    public void addChuckToStorage(Chunk chunk) {
+    public boolean addChuckToStorage(Chunk chunk) {
 
         if ((this.overallSpace - this.occupiedSpace) < chunk.data.length) {
             System.out.println("Peer doesn't have space for chunk number " + chunk.chunkNo + " of " + chunk.fileId + " from " + chunk.senderId);
-            return;
+            return false;
         }
 
         this.storedChunks.add(chunk);
@@ -39,13 +39,11 @@ public class Storage implements Serializable {
             FileOutputStream fos = new FileOutputStream(filename);
             fos.write(chunk.data);
 
-            System.out.println("Sent " + "STORED " + chunk.version + " " + chunk.senderId + " " + chunk.fileId + " " + chunk.chunkNo);
-
+            //System.out.println("Sent " + "STORED " + chunk.version + " " + chunk.senderId + " " + chunk.fileId + " " + chunk.chunkNo);
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
+        return false;
     }
-
 }

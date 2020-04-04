@@ -1,14 +1,23 @@
 package com.assigment_1.Protocol;
 
+import com.assigment_1.PeerClient;
+import com.sun.javafx.image.BytePixelSetter;
+import javafx.util.Pair;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 public class MultiCastBackUpChannel extends MultiCastChannel {
+    int time;
+    int counter;
 
     public MultiCastBackUpChannel(String INETAddress, int port) {
         super(INETAddress, port);
+        this.counter = 1;
+        this.time = 1;
     }
 
     public void backUpFile(double version, String senderId, String filepath, int replicationDeg) {
@@ -16,9 +25,9 @@ public class MultiCastBackUpChannel extends MultiCastChannel {
         File file = new File(filepath);
 
         try (
-            FileInputStream fis = new FileInputStream(file);
-            BufferedInputStream bis = new BufferedInputStream(fis)
-        ){
+                FileInputStream fis = new FileInputStream(file);
+                BufferedInputStream bis = new BufferedInputStream(fis)
+        ) {
             int chunkNr = 0;
             int bytesAmount;
             byte[] buffer = new byte[com.assigment_1.Protocol.MultiCastChannel.sizeOfChunks];
@@ -29,7 +38,19 @@ public class MultiCastBackUpChannel extends MultiCastChannel {
                 byte[] data = Arrays.copyOf(buffer, bytesAmount);
                 byte[] message = MessageFactory.createMessage(version, "PUTCHUNK", senderId, fileID, chunkNr, replicationDeg, data);
 
-                this.exec.execute(new Thread(() -> this.sendChunk(message)));
+                if (!PeerClient.getStorage().getStoredChuncksCounter().containsKey(new Pair(fileID, chunkNr))) {
+                    PeerClient.getStorage().getStoredChuncksCounter().put(new Pair(fileID, chunkNr), 0);
+                }
+
+                int numStoredTimes = PeerClient.getStorage().getStoredChuncksCounter().get(new Pair(fileID, chunkNr));
+
+                System.out.println(numStoredTimes + " < " + counter);
+                while (numStoredTimes < replicationDeg && counter <= 5) {
+
+                    this.exec.schedule(new Thread(() -> this.sendChunk(message)), time, TimeUnit.SECONDS);
+                    counter++;
+                    time = 2 * time;
+                }
 
                 chunkNr++;
             }
@@ -48,7 +69,7 @@ public class MultiCastBackUpChannel extends MultiCastChannel {
         return sha256(fileID);
     }
 
-    private String sha256(String data){
+    private String sha256(String data) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(data.getBytes(StandardCharsets.UTF_8));

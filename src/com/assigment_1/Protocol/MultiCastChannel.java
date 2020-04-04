@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import com.assigment_1.PeerClient;
+import javafx.util.Pair;
 
 public class MultiCastChannel implements Runnable {
 
@@ -14,11 +15,11 @@ public class MultiCastChannel implements Runnable {
     private int port;
     private InetAddress address;
 
-    public MultiCastChannel(String INETaddress, int port) {
+    public MultiCastChannel(String INETAddress, int port) {
         try {
 
             this.port = port;
-            this.address = InetAddress.getByName(INETaddress);
+            this.address = InetAddress.getByName(INETAddress);
             this.exec = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(250);
 
         } catch (UnknownHostException e) {

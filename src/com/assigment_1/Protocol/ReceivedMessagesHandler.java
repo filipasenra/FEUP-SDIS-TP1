@@ -3,6 +3,7 @@ package com.assigment_1.Protocol;
 import com.assigment_1.Chunk;
 import com.assigment_1.Peer;
 import com.assigment_1.PeerClient;
+import javafx.util.Pair;
 
 public class ReceivedMessagesHandler implements Runnable {
 
@@ -61,5 +62,10 @@ public class ReceivedMessagesHandler implements Runnable {
 
     private void manageStored() {
         System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
+        PeerClient.getStorage().updateStoredChunksCounter(this.messageFactory.fileId, this.messageFactory.chunkNo);
+
+        Pair<String, Integer> pair = new Pair(this.messageFactory.fileId, this.messageFactory.chunkNo);
+
+        System.out.println(PeerClient.getStorage().getStoredChuncksCounter().get(pair));
     }
 }

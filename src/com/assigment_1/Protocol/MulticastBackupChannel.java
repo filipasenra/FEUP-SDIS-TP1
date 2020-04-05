@@ -45,9 +45,12 @@ public class MulticastBackupChannel extends MulticastChannel {
                 int numStoredTimes = PeerClient.getStorage().getStoredChunksCounter().get(new Pair(fileID, chunkNr));
 
                 while (numStoredTimes < replicationDeg && counter <= 5) {
-                    System.out.println(numStoredTimes + " < " + counter);
-
                     this.exec.schedule(new Thread(() -> this.sendChunk(message)), time, TimeUnit.SECONDS);
+                    Thread.sleep(2000);
+
+                    numStoredTimes = PeerClient.getStorage().getStoredChunksCounter().get(new Pair(fileID, chunkNr));
+                    System.out.println(numStoredTimes + " < " + replicationDeg);
+
                     counter++;
                     time = 2 * time;
                 }
@@ -56,7 +59,7 @@ public class MulticastBackupChannel extends MulticastChannel {
             }
 
 
-        } catch (IOException e) {
+        } catch (IOException |  InterruptedException e) {
             e.printStackTrace();
         }
 

@@ -3,7 +3,7 @@ package com.assigment_1.Protocol;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-public class MulticastControlChannel extends MultiCastChannel {
+public class MulticastControlChannel extends MulticastChannel {
     public MulticastControlChannel(String INETAddress, int port) {
         super(INETAddress, port);
     }

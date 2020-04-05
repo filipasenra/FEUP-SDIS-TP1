@@ -1,8 +1,6 @@
 package com.assigment_1;
 
 import com.assigment_1.Protocol.*;
-import javafx.util.Pair;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
@@ -10,11 +8,11 @@ public class Peer implements InterfacePeer {
     private String id;
     private Double version;
 
-    private MultiCastBackUpChannel MDB;
+    private MulticastBackupChannel MDB;
     private MulticastControlChannel MC;
     private ScheduledThreadPoolExecutor exec = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(250);
 
-    public Peer(Double version, String id, MulticastControlChannel MC, MultiCastBackUpChannel MDB, String MDRAddress, int MDRPort) {
+    public Peer(Double version, String id, MulticastControlChannel MC, MulticastBackupChannel MDB, String MDRAddress, int MDRPort) {
         this.version = version;
         this.id = id;
         this.MDB = MDB;

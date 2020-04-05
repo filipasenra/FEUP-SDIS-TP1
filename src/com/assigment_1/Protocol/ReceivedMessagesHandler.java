@@ -57,7 +57,7 @@ public class ReceivedMessagesHandler implements Runnable {
 
         Chunk chunk = new Chunk(this.messageFactory.version, this.messageFactory.senderId, this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.replicationDeg, this.messageFactory.data);
 
-        PeerClient.getStorage().addChuckToStorage(chunk);
+        PeerClient.getStorage().addChunkToStorage(chunk);
     }
 
     private void manageStored() {
@@ -66,6 +66,6 @@ public class ReceivedMessagesHandler implements Runnable {
 
         Pair<String, Integer> pair = new Pair(this.messageFactory.fileId, this.messageFactory.chunkNo);
 
-        System.out.println(PeerClient.getStorage().getStoredChuncksCounter().get(pair));
+        System.out.println(PeerClient.getStorage().getStoredChunksCounter().get(pair));
     }
 }

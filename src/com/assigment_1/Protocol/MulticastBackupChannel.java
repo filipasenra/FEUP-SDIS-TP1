@@ -10,11 +10,11 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public class MultiCastBackUpChannel extends MultiCastChannel {
+public class MulticastBackupChannel extends MulticastChannel {
     int time;
     int counter;
 
-    public MultiCastBackUpChannel(String INETAddress, int port) {
+    public MulticastBackupChannel(String INETAddress, int port) {
         super(INETAddress, port);
         this.counter = 1;
         this.time = 1;
@@ -30,7 +30,7 @@ public class MultiCastBackUpChannel extends MultiCastChannel {
         ) {
             int chunkNr = 0;
             int bytesAmount;
-            byte[] buffer = new byte[com.assigment_1.Protocol.MultiCastChannel.sizeOfChunks];
+            byte[] buffer = new byte[sizeOfChunks];
             String fileID = this.generateId(file.getName(), file.lastModified(), file.getParent());
 
             while ((bytesAmount = bis.read(buffer)) > 0) {
@@ -38,14 +38,14 @@ public class MultiCastBackUpChannel extends MultiCastChannel {
                 byte[] data = Arrays.copyOf(buffer, bytesAmount);
                 byte[] message = MessageFactory.createMessage(version, "PUTCHUNK", senderId, fileID, chunkNr, replicationDeg, data);
 
-                if (!PeerClient.getStorage().getStoredChuncksCounter().containsKey(new Pair(fileID, chunkNr))) {
-                    PeerClient.getStorage().getStoredChuncksCounter().put(new Pair(fileID, chunkNr), 0);
+                if (!PeerClient.getStorage().getStoredChunksCounter().containsKey(new Pair(fileID, chunkNr))) {
+                    PeerClient.getStorage().getStoredChunksCounter().put(new Pair(fileID, chunkNr), 0);
                 }
 
-                int numStoredTimes = PeerClient.getStorage().getStoredChuncksCounter().get(new Pair(fileID, chunkNr));
+                int numStoredTimes = PeerClient.getStorage().getStoredChunksCounter().get(new Pair(fileID, chunkNr));
 
-                System.out.println(numStoredTimes + " < " + counter);
                 while (numStoredTimes < replicationDeg && counter <= 5) {
+                    System.out.println(numStoredTimes + " < " + counter);
 
                     this.exec.schedule(new Thread(() -> this.sendChunk(message)), time, TimeUnit.SECONDS);
                     counter++;

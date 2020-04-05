@@ -15,7 +15,7 @@ public class Storage implements Serializable {
     private ArrayList<Chunk> storedChunks = new ArrayList<>();
 
     // Para contar quantas vezes um chunk já foi guardado
-    private ConcurrentHashMap<Pair<String, Integer>, Integer> storedChuncksCounter = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Pair<String, Integer>, Integer> storedChunksCounter = new ConcurrentHashMap<>();
 
     private int overallSpace;
     private int occupiedSpace = 0;
@@ -24,7 +24,7 @@ public class Storage implements Serializable {
         this.overallSpace = overallSpace;
     }
 
-    public void addChuckToStorage(Chunk chunk) {
+    public void addChunkToStorage(Chunk chunk) {
 
         if ((this.overallSpace - this.occupiedSpace) < chunk.data.length) {
             System.out.println("Peer doesn't have space for chunk number " + chunk.chunkNo + " of " + chunk.fileId + " from " + chunk.senderId);
@@ -46,26 +46,26 @@ public class Storage implements Serializable {
             FileOutputStream fos = new FileOutputStream(filename);
             fos.write(chunk.data);
 
-            //SEND CHUCK STORAGE CONFIRMATION MESSAGE
+            //SEND CHUNK STORAGE CONFIRMATION MESSAGE
             PeerClient.getMC().confirmStore(chunk.version, PeerClient.getId(), chunk.fileId, chunk.chunkNo);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public ConcurrentHashMap<Pair<String, Integer>, Integer> getStoredChuncksCounter() {
-        return storedChuncksCounter;
+    public ConcurrentHashMap<Pair<String, Integer>, Integer> getStoredChunksCounter() {
+        return storedChunksCounter;
     }
 
     public synchronized void updateStoredChunksCounter(String fileId, int chunkNo) {
 
         Pair<String, Integer> pair = new Pair(fileId, chunkNo);
 
-        if (!PeerClient.getStorage().getStoredChuncksCounter().containsKey(pair)) {
-            PeerClient.getStorage().getStoredChuncksCounter().put(pair, 1);
+        if (!PeerClient.getStorage().getStoredChunksCounter().containsKey(pair)) {
+            PeerClient.getStorage().getStoredChunksCounter().put(pair, 1);
         } else {
-            int total = this.storedChuncksCounter.get(pair) + 1;
-            this.storedChuncksCounter.replace(pair, total);
+            int total = this.storedChunksCounter.get(pair) + 1;
+            this.storedChunksCounter.replace(pair, total);
         }
 
     }

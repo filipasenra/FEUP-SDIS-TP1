@@ -23,7 +23,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 public class PeerClient {
 
     private static String id;
-    private static MultiCastBackUpChannel MDB;
+    private static MulticastBackupChannel MDB;
     public static MulticastControlChannel MC;
     private static Storage storage = new Storage(100000); ///TODO: change 100
 
@@ -51,7 +51,7 @@ public class PeerClient {
         String MDRAddress = args[7];
         int MDRPort = Integer.parseInt(args[8]);
 
-        MDB = new MultiCastBackUpChannel(MDBAddress, MDBPort);
+        MDB = new MulticastBackupChannel(MDBAddress, MDBPort);
         MC = new MulticastControlChannel(MCAddress, MCPort);
 
         Peer obj = new Peer(version, id, MC, MDB, MDRAddress, MDRPort);
@@ -77,7 +77,7 @@ public class PeerClient {
         return MC;
     }
 
-    public static MultiCastBackUpChannel getMDB() {
+    public static MulticastBackupChannel getMDB() {
         return MDB;
     }
 

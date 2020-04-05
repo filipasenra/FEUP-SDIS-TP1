@@ -8,14 +8,14 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import com.assigment_1.PeerClient;
 import javafx.util.Pair;
 
-public class MultiCastChannel implements Runnable {
+public class MulticastChannel implements Runnable {
 
     protected final static int sizeOfChunks = 64000;
     protected ScheduledThreadPoolExecutor exec;
     private int port;
     private InetAddress address;
 
-    public MultiCastChannel(String INETAddress, int port) {
+    public MulticastChannel(String INETAddress, int port) {
         try {
 
             this.port = port;

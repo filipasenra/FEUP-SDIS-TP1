@@ -18,6 +18,10 @@ final class MessageFactory {
         return (version + " " + messageType + " " + senderId + " " + fileId + " " + chunkNo + CRLF + CRLF).getBytes();
     }
 
+    public static byte[] createMessage(double version, String messageType, String senderId, String fileId){
+        return (version + " " + messageType + " " + senderId + " " + fileId + " " + CRLF + CRLF).getBytes();
+    }
+
     public static byte[] createMessage(double version, String messageType, String senderId, String fileId, int chunkNo, int replicationDeg){
 
         return (version + " " + messageType + " " + senderId + " " + fileId + " " + chunkNo + " " + replicationDeg + CRLF + CRLF).getBytes();

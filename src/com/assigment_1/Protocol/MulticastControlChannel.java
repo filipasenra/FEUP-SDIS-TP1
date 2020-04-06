@@ -1,9 +1,12 @@
 package com.assigment_1.Protocol;
 
-import java.util.Random;
+import com.assigment_1.PeerClient;
+
 import java.util.concurrent.TimeUnit;
+import java.util.Random;
 
 public class MulticastControlChannel extends MulticastChannel {
+
     public MulticastControlChannel(String INETAddress, int port) {
         super(INETAddress, port);
     }
@@ -13,6 +16,12 @@ public class MulticastControlChannel extends MulticastChannel {
 
         Random random = new Random();
 
-        this.exec.schedule(new Thread(() -> this.sendConfirmStore(message)), random.nextInt(401), TimeUnit.MILLISECONDS);
+        this.exec.schedule(new Thread(() -> this.sendMessage(message)), random.nextInt(401), TimeUnit.MILLISECONDS);
+    }
+
+    public void deleteFile(double version, String senderId, String fileID) {
+        byte[] message = MessageFactory.createMessage(version, "DELETE", senderId, fileID);
+
+        PeerClient.getExec().schedule(new Thread(() -> this.sendMessage(message)), 1, TimeUnit.SECONDS);
     }
 }

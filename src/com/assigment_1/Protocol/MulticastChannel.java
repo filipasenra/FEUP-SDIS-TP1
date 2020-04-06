@@ -25,32 +25,16 @@ public class MulticastChannel implements Runnable {
         }
     }
 
-    public void sendChunk(byte[] chunk) {
+    public void sendMessage(byte[] message) {
 
         try {
-            //opening DatagramSocket to send chunk
-            DatagramSocket senderSocket = new DatagramSocket();
-
-            DatagramPacket msgPacket = new DatagramPacket(chunk, chunk.length, this.address, this.port);
-            senderSocket.send(msgPacket);
-
-            System.out.println("SENDING CHUNK");
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public void sendConfirmStore(byte[] message) {
-
-        try {
-            //opening DatagramSocket to send confirm message
+            //opening DatagramSocket to send message
             DatagramSocket senderSocket = new DatagramSocket();
 
             DatagramPacket msgPacket = new DatagramPacket(message, message.length, this.address, this.port);
             senderSocket.send(msgPacket);
 
-            System.out.println("SENDING CONFIRM MESSAGE");
+            System.out.println("SENDING MESSAGE");
 
         } catch (IOException ex) {
             ex.printStackTrace();

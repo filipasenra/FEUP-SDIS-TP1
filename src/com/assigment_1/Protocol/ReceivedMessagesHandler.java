@@ -41,7 +41,7 @@ public class ReceivedMessagesHandler implements Runnable {
                 //TODO
                 break;
             case "DELETE":
-                //TODO
+                manageDeletion();
                 break;
             case "REMOVED":
                 //TODO
@@ -66,5 +66,9 @@ public class ReceivedMessagesHandler implements Runnable {
 
         Pair<String, Integer> pair = new Pair<>(this.messageFactory.fileId, this.messageFactory.chunkNo);
         System.out.println(PeerClient.getStorage().getStoredChunksCounter().get(pair));
+    }
+
+    private void manageDeletion() {
+        System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
     }
 }

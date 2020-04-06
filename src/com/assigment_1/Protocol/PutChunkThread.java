@@ -29,7 +29,7 @@ public class PutChunkThread implements Runnable {
         System.out.println(numStoredTimes + " < " + replicationDeg);
 
         if (numStoredTimes < replicationDeg) {
-            PeerClient.getExec().execute(new Thread(() -> PeerClient.getMDB().sendChunk(message)));
+            PeerClient.getExec().execute(new Thread(() -> PeerClient.getMDB().sendMessage(message)));
 
             if (this.counter < 5) {
                 PeerClient.getExec().schedule(this, this.delay, TimeUnit.SECONDS);

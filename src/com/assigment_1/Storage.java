@@ -4,13 +4,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import javafx.util.Pair;
 import java.io.File;
 
 public class Storage implements Serializable {
-
-    private ArrayList<Chunk> storedChunks = new ArrayList<>();
+    private HashMap<Pair<String, Integer>, Chunk> storedChunks = new HashMap<>();
 
     // Para contar quantas vezes um chunk já foi guardado
     private ConcurrentHashMap<Pair<String, Integer>, Integer> storedChunksCounter = new ConcurrentHashMap<>();
@@ -29,27 +28,33 @@ public class Storage implements Serializable {
             return;
         }
 
-        this.storedChunks.add(chunk);
-        this.occupiedSpace += chunk.data.length;
+        Pair<String, Integer> pair = new Pair<>(chunk.fileId, chunk.chunkNo);
 
-        String filename = PeerClient.getId() + "/" + chunk.fileId + "_" + chunk.chunkNo;
+        if (!storedChunks.containsKey(pair)) {
+            this.storedChunks.put(pair, chunk);
+            this.occupiedSpace += chunk.data.length;
 
-        File file = new File(filename);
-        try {
-            if (!file.exists()) {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-                return;
+            String filename = PeerClient.getId() + "/" + chunk.fileId + "_" + chunk.chunkNo;
+
+            File file = new File(filename);
+            try {
+                if (!file.exists()) {
+                    file.getParentFile().mkdirs();
+                    file.createNewFile();
+                    return;
+                }
+
+                FileOutputStream fos = new FileOutputStream(filename);
+                fos.write(chunk.data);
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-            FileOutputStream fos = new FileOutputStream(filename);
-            fos.write(chunk.data);
-
-            //SEND CHUNK STORAGE CONFIRMATION MESSAGE
-            PeerClient.getMC().confirmStore(chunk.version, PeerClient.getId(), chunk.fileId, chunk.chunkNo);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
+        //SEND CHUNK STORAGE CONFIRMATION MESSAGE
+        PeerClient.getMC().confirmStore(chunk.version, PeerClient.getId(), chunk.fileId, chunk.chunkNo);
     }
 
     public ConcurrentHashMap<Pair<String, Integer>, Integer> getStoredChunksCounter() {
@@ -60,8 +65,8 @@ public class Storage implements Serializable {
 
         Pair<String, Integer> pair = new Pair<>(fileId, chunkNo);
 
-        if (!PeerClient.getStorage().getStoredChunksCounter().containsKey(pair)) {
-            PeerClient.getStorage().getStoredChunksCounter().put(pair, 1);
+        if (!this.storedChunksCounter.containsKey(pair)) {
+            this.storedChunksCounter.put(pair, 1);
         } else {
             int total = this.storedChunksCounter.get(pair) + 1;
             this.storedChunksCounter.replace(pair, total);

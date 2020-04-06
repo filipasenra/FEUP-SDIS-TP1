@@ -9,15 +9,10 @@ import javafx.util.Pair;
 import java.util.Arrays;
 import java.io.*;
 
-
 public class MulticastBackupChannel extends MulticastChannel {
-    int time;
-    int counter;
 
     public MulticastBackupChannel(String INETAddress, int port) {
         super(INETAddress, port);
-        this.counter = 1;
-        this.time = 1;
     }
 
     public void backupFile(double version, String senderId, String filepath, int replicationDeg) {
@@ -41,30 +36,17 @@ public class MulticastBackupChannel extends MulticastChannel {
                 Pair <String, Integer> pair = new Pair <> (fileID, chunkNr);
 
                 if (!PeerClient.getStorage().getStoredChunksCounter().containsKey(pair)) {
-                    ArrayList<String> aux = new ArrayList<String>();
+                    ArrayList<String> aux = new ArrayList<>();
                     PeerClient.getStorage().getStoredChunksCounter().put(pair, aux);
                 }
 
-                int numStoredTimes = PeerClient.getStorage().getStoredChunksCounter().get(pair).size();
+                PeerClient.getExec().schedule(new PutChunkThread(replicationDeg, message, fileID, chunkNr), 1, TimeUnit.SECONDS);
 
-                while (numStoredTimes < replicationDeg && counter <= 5) {
-                    this.exec.execute(new Thread(() -> this.sendChunk(message)));
-                    Thread.sleep(time*1000);
-
-                    numStoredTimes = PeerClient.getStorage().getStoredChunksCounter().get(pair).size();
-                    System.out.println(numStoredTimes + " < " + replicationDeg);
-
-                    counter++;
-                    time = 2 * time;
-                }
-
-                counter = 0;
-                time = 1;
                 chunkNr++;
             }
 
 
-        } catch (IOException |  InterruptedException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

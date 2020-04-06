@@ -72,6 +72,10 @@ public class PeerClient {
         return MC;
     }
 
+    public static MulticastBackupChannel getMDB() {
+        return MDB;
+    }
+
     public static String getId() {
         return id;
     }

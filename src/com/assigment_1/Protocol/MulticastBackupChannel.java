@@ -1,6 +1,7 @@
 package com.assigment_1.Protocol;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.security.MessageDigest;
 import com.assigment_1.PeerClient;
@@ -39,16 +40,18 @@ public class MulticastBackupChannel extends MulticastChannel {
 
                 Pair <String, Integer> pair = new Pair <> (fileID, chunkNr);
 
-                if (!PeerClient.getStorage().getStoredChunksCounter().containsKey(pair))
-                    PeerClient.getStorage().getStoredChunksCounter().put(pair, 0);
+                if (!PeerClient.getStorage().getStoredChunksCounter().containsKey(pair)) {
+                    ArrayList<String> aux = new ArrayList<String>();
+                    PeerClient.getStorage().getStoredChunksCounter().put(pair, aux);
+                }
 
-                int numStoredTimes = PeerClient.getStorage().getStoredChunksCounter().get(pair);
+                int numStoredTimes = PeerClient.getStorage().getStoredChunksCounter().get(pair).size();
 
                 while (numStoredTimes < replicationDeg && counter <= 5) {
                     this.exec.schedule(new Thread(() -> this.sendChunk(message)), time, TimeUnit.SECONDS);
                     Thread.sleep(3000);
 
-                    numStoredTimes = PeerClient.getStorage().getStoredChunksCounter().get(pair);
+                    numStoredTimes = PeerClient.getStorage().getStoredChunksCounter().get(pair).size();
                     System.out.println(numStoredTimes + " < " + replicationDeg);
 
                     counter++;

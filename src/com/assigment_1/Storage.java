@@ -1,5 +1,6 @@
 package com.assigment_1;
 
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.io.FileOutputStream;
 import java.io.Serializable;
@@ -9,13 +10,10 @@ import javafx.util.Pair;
 import java.io.File;
 
 public class Storage implements Serializable {
-    private HashMap<Pair<String, Integer>, Chunk> storedChunks = new HashMap<>();
-
-    // Para contar quantas vezes um chunk já foi guardado
-    private ConcurrentHashMap<Pair<String, Integer>, Integer> storedChunksCounter = new ConcurrentHashMap<>();
-
     private int overallSpace;
     private int occupiedSpace = 0;
+    private HashMap<Pair<String, Integer>, Chunk> storedChunks = new HashMap<>();
+    private ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> storedChunksCounter = new ConcurrentHashMap<>();
 
     public Storage(int overallSpace) {
         this.overallSpace = overallSpace;
@@ -57,19 +55,23 @@ public class Storage implements Serializable {
         PeerClient.getMC().confirmStore(chunk.version, PeerClient.getId(), chunk.fileId, chunk.chunkNo);
     }
 
-    public ConcurrentHashMap<Pair<String, Integer>, Integer> getStoredChunksCounter() {
+    public ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> getStoredChunksCounter() {
         return storedChunksCounter;
     }
 
-    public void updateStoredChunksCounter(String fileId, int chunkNo) {
+    public void updateStoredChunksCounter(String fileId, int chunkNo, String senderId) {
 
         Pair<String, Integer> pair = new Pair<>(fileId, chunkNo);
+        ArrayList<String> aux = new ArrayList<>();
+        aux.add(senderId);
 
         if (!this.storedChunksCounter.containsKey(pair)) {
-            this.storedChunksCounter.put(pair, 1);
+            this.storedChunksCounter.put(pair, aux);
         } else {
-            int total = this.storedChunksCounter.get(pair) + 1;
-            this.storedChunksCounter.replace(pair, total);
+            ArrayList<String> curr = this.storedChunksCounter.get(pair);
+
+            if (!curr.contains(senderId))
+                curr.add(senderId);
         }
 
     }

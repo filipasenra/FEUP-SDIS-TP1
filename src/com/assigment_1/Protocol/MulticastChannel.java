@@ -1,10 +1,13 @@
 package com.assigment_1.Protocol;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.Executors;
 import com.assigment_1.PeerClient;
+
 import java.io.IOException;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class MulticastChannel implements Runnable {
 
@@ -66,5 +69,32 @@ public class MulticastChannel implements Runnable {
             ex.printStackTrace();
         }
 
+    }
+
+    protected String generateId(String filename, long lastModified, String owner) {
+
+        String fileID = filename + '-' + lastModified + '-' + owner;
+
+        return sha256(fileID);
+    }
+
+    protected String sha256(String data) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(data.getBytes(StandardCharsets.UTF_8));
+            StringBuilder hexString = new StringBuilder();
+
+            for (byte singleByte : hash) {
+                String hex = Integer.toHexString(0xff & singleByte);
+                if (hex.length() == 1)
+                    hexString.append('0');
+                hexString.append(hex);
+            }
+
+            return hexString.toString();
+
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }

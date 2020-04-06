@@ -1,10 +1,11 @@
-/out
+out/
 
 # Compiled class file
 *.class
 
 #intelliJ stuff
 sdis1920-t2g05.iml
+SDIS_Trabalho1.iml
 .idea
 
 

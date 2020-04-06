@@ -1,13 +1,15 @@
 package com.assigment_1.Protocol;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-import java.security.MessageDigest;
 import com.assigment_1.PeerClient;
 import javafx.util.Pair;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.io.*;
+import java.util.concurrent.TimeUnit;
 
 public class MulticastBackupChannel extends MulticastChannel {
 
@@ -50,33 +52,6 @@ public class MulticastBackupChannel extends MulticastChannel {
             e.printStackTrace();
         }
 
-    }
-
-    private String generateId(String filename, long lastModified, String owner) {
-
-        String fileID = filename + '-' + lastModified + '-' + owner;
-
-        return sha256(fileID);
-    }
-
-    private String sha256(String data) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(data.getBytes(StandardCharsets.UTF_8));
-            StringBuilder hexString = new StringBuilder();
-
-            for (byte singleByte : hash) {
-                String hex = Integer.toHexString(0xff & singleByte);
-                if (hex.length() == 1)
-                    hexString.append('0');
-                hexString.append(hex);
-            }
-
-            return hexString.toString();
-
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
     }
 
 }

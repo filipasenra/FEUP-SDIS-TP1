@@ -11,21 +11,25 @@ public class ReceivedMessagesHandler implements Runnable {
 
     public ReceivedMessagesHandler(byte[] message) {
         this.message = message;
+
     }
 
     @Override
     public void run() {
 
+
         this.messageFactory = new MessageFactory();
 
         if (!messageFactory.parseMessage(this.message)) {
-            System.err.println("NOT A VALID PROTOCOL");
             return;
         }
 
         //Ignore messages
         if(PeerClient.getId().equals(messageFactory.senderId))
+        {
+            System.out.println("Ignored Message");
             return;
+        }
 
         switch (messageFactory.messageType) {
             case "PUTCHUNK":
@@ -49,6 +53,8 @@ public class ReceivedMessagesHandler implements Runnable {
             default:
                 System.err.println("NOT A VALID PROTOCOL");
         }
+
+
     }
 
     private void managePutChunk() {

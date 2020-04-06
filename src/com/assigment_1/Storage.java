@@ -56,7 +56,7 @@ public class Storage implements Serializable {
         return storedChunksCounter;
     }
 
-    public synchronized void updateStoredChunksCounter(String fileId, int chunkNo) {
+    public void updateStoredChunksCounter(String fileId, int chunkNo) {
 
         Pair<String, Integer> pair = new Pair<>(fileId, chunkNo);
 

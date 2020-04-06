@@ -55,6 +55,8 @@ public class MulticastBackupChannel extends MulticastChannel {
                     time = 2 * time;
                 }
 
+                counter = 0;
+                time = 1;
                 chunkNr++;
             }
 

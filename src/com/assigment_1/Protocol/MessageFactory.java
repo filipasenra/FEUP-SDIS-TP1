@@ -3,9 +3,7 @@ package com.assigment_1.Protocol;
 import java.util.Arrays;
 
 final class MessageFactory {
-    //<Version> <MessageType> <SenderId> <FileId> <ChunkNo> <ReplicationDeg> <CRLF>
     static String CRLF = "\r\n";
-
     double version;
     String messageType;
     String senderId;

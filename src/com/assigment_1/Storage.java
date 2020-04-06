@@ -1,14 +1,12 @@
 package com.assigment_1;
 
-import com.sun.javafx.binding.StringFormatter;
-import javafx.util.Pair;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
+import java.io.FileOutputStream;
+import java.io.Serializable;
+import java.io.IOException;
+import java.util.ArrayList;
+import javafx.util.Pair;
+import java.io.File;
 
 public class Storage implements Serializable {
 
@@ -41,6 +39,7 @@ public class Storage implements Serializable {
             if (!file.exists()) {
                 file.getParentFile().mkdirs();
                 file.createNewFile();
+                return;
             }
 
             FileOutputStream fos = new FileOutputStream(filename);
@@ -59,7 +58,7 @@ public class Storage implements Serializable {
 
     public synchronized void updateStoredChunksCounter(String fileId, int chunkNo) {
 
-        Pair<String, Integer> pair = new Pair(fileId, chunkNo);
+        Pair<String, Integer> pair = new Pair<>(fileId, chunkNo);
 
         if (!PeerClient.getStorage().getStoredChunksCounter().containsKey(pair)) {
             PeerClient.getStorage().getStoredChunksCounter().put(pair, 1);

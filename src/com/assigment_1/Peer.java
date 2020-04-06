@@ -9,14 +9,12 @@ public class Peer implements InterfacePeer {
     private Double version;
 
     private MulticastBackupChannel MDB;
-    private MulticastControlChannel MC;
     private ScheduledThreadPoolExecutor exec = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(250);
 
     public Peer(Double version, String id, MulticastControlChannel MC, MulticastBackupChannel MDB, String MDRAddress, int MDRPort) {
         this.version = version;
         this.id = id;
         this.MDB = MDB;
-        this.MC = MC;
     }
 
     @Override
@@ -25,6 +23,6 @@ public class Peer implements InterfacePeer {
         System.out.println(" > File path: " + file_path);
         System.out.println(" > Replication Degree: " + replication_degree);
 
-        exec.execute(new Thread(() -> MDB.backUpFile(this.version, this.id, file_path, replication_degree)));
+        exec.execute(new Thread(() -> MDB.backupFile(this.version, this.id, file_path, replication_degree)));
     }
 }

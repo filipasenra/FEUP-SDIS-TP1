@@ -1,17 +1,12 @@
 package com.assigment_1;
 
-import com.assigment_1.PeerClient;
 import com.assigment_1.Protocol.*;
-
-import java.rmi.AlreadyBoundException;
-import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-
 
 // make in root:
 // javac -d out com/assigment_1/Protocol/*.java
@@ -75,10 +70,6 @@ public class PeerClient {
 
     public static MulticastControlChannel getMC() {
         return MC;
-    }
-
-    public static MulticastBackupChannel getMDB() {
-        return MDB;
     }
 
     public static String getId() {

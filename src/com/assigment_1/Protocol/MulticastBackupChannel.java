@@ -1,14 +1,13 @@
 package com.assigment_1.Protocol;
 
-import com.assigment_1.PeerClient;
-import com.sun.javafx.image.BytePixelSetter;
-import javafx.util.Pair;
-
-import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+import java.security.MessageDigest;
+import com.assigment_1.PeerClient;
+import javafx.util.Pair;
+import java.util.Arrays;
+import java.io.*;
+
 
 public class MulticastBackupChannel extends MulticastChannel {
     int time;
@@ -20,7 +19,7 @@ public class MulticastBackupChannel extends MulticastChannel {
         this.time = 1;
     }
 
-    public void backUpFile(double version, String senderId, String filepath, int replicationDeg) {
+    public void backupFile(double version, String senderId, String filepath, int replicationDeg) {
 
         File file = new File(filepath);
 
@@ -38,17 +37,18 @@ public class MulticastBackupChannel extends MulticastChannel {
                 byte[] data = Arrays.copyOf(buffer, bytesAmount);
                 byte[] message = MessageFactory.createMessage(version, "PUTCHUNK", senderId, fileID, chunkNr, replicationDeg, data);
 
-                if (!PeerClient.getStorage().getStoredChunksCounter().containsKey(new Pair(fileID, chunkNr))) {
-                    PeerClient.getStorage().getStoredChunksCounter().put(new Pair(fileID, chunkNr), 0);
-                }
+                Pair <String, Integer> pair = new Pair <> (fileID, chunkNr);
 
-                int numStoredTimes = PeerClient.getStorage().getStoredChunksCounter().get(new Pair(fileID, chunkNr));
+                if (!PeerClient.getStorage().getStoredChunksCounter().containsKey(pair))
+                    PeerClient.getStorage().getStoredChunksCounter().put(pair, 0);
+
+                int numStoredTimes = PeerClient.getStorage().getStoredChunksCounter().get(pair);
 
                 while (numStoredTimes < replicationDeg && counter <= 5) {
                     this.exec.schedule(new Thread(() -> this.sendChunk(message)), time, TimeUnit.SECONDS);
                     Thread.sleep(3000);
 
-                    numStoredTimes = PeerClient.getStorage().getStoredChunksCounter().get(new Pair(fileID, chunkNr));
+                    numStoredTimes = PeerClient.getStorage().getStoredChunksCounter().get(pair);
                     System.out.println(numStoredTimes + " < " + replicationDeg);
 
                     counter++;

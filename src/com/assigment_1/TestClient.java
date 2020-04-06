@@ -32,7 +32,7 @@ public class TestClient {
 
         switch (sub_protocol){
             case "BACKUP":
-                return testClientHandler.doBackUp(arguments);
+                return testClientHandler.doBackup(arguments);
             case "RESTORE":
                 //TODO
             case "DELETE":

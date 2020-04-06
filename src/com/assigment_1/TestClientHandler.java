@@ -21,7 +21,7 @@ public class TestClientHandler {
         }
     }
 
-    public boolean doBackUp(String[] arguments){
+    public boolean doBackup(String[] arguments){
 
         if(arguments.length != 2) {
             System.err.println("Wrong no. of arguments");

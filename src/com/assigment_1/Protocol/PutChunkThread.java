@@ -26,14 +26,14 @@ public class PutChunkThread implements Runnable {
     public void run() {
         Pair<String, Integer> pair = new Pair <> (this.fileId, this.chunkNo);
         int numStoredTimes = PeerClient.getStorage().getStoredChunksCounter().get(pair).size();
-        System.out.println(numStoredTimes + " < " + replicationDeg);
+        System.out.println(numStoredTimes + " < " + replicationDeg + " -> para o chunk " + chunkNo + " com delay " + this.delay + " na tentativa " + this.counter);
 
         if (numStoredTimes < replicationDeg) {
             PeerClient.getExec().execute(new Thread(() -> PeerClient.getMDB().sendMessage(message)));
 
-            if (this.counter < 5) {
+           if (this.counter < 5) {
                 PeerClient.getExec().schedule(this, this.delay, TimeUnit.SECONDS);
-            }
+           }
 
             this.counter++;
             this.delay = 2 * this.delay;

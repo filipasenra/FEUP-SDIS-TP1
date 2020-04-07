@@ -27,7 +27,7 @@ public class ReceivedMessagesHandler implements Runnable {
         //Ignore messages
         if(PeerClient.getId().equals(messageFactory.senderId))
         {
-            System.out.println("Ignored Message");
+            //System.out.println("Ignored Message");
             return;
         }
 

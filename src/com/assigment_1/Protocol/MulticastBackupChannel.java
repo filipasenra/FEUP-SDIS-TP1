@@ -42,7 +42,7 @@ public class MulticastBackupChannel extends MulticastChannel {
                     PeerClient.getStorage().getStoredChunksCounter().put(pair, aux);
                 }
 
-                PeerClient.getExec().schedule(new PutChunkThread(replicationDeg, message, fileID, chunkNr), 1, TimeUnit.SECONDS);
+                PeerClient.getExec().execute(new PutChunkThread(replicationDeg, message, fileID, chunkNr));
 
                 chunkNr++;
             }

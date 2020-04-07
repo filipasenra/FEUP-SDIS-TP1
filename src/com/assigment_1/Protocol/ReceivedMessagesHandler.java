@@ -4,6 +4,8 @@ import com.assigment_1.Chunk;
 import com.assigment_1.PeerClient;
 import javafx.util.Pair;
 
+import java.io.FileNotFoundException;
+
 public class ReceivedMessagesHandler implements Runnable {
 
     MessageFactory messageFactory;
@@ -75,6 +77,8 @@ public class ReceivedMessagesHandler implements Runnable {
     }
 
     private void manageDeletion() {
-        System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
+        System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId);
+
+        PeerClient.getStorage().deleteFileChunks(this.messageFactory.fileId);
     }
 }

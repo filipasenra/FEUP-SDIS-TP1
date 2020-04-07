@@ -47,11 +47,9 @@ public class MulticastBackupChannel extends MulticastChannel {
                 chunkNr++;
             }
 
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 }

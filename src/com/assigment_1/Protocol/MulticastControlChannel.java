@@ -26,6 +26,8 @@ public class MulticastControlChannel extends MulticastChannel {
 
         String fileID = this.generateId(file.getName(), file.lastModified(), file.getParent());
 
+        PeerClient.getStorage().deleteStoredChunksCounter(fileID);
+
         byte[] message = MessageFactory.createMessage(version, "DELETE", senderId, fileID);
 
         PeerClient.getExec().schedule(new Thread(() -> this.sendMessage(message)), 1, TimeUnit.SECONDS);

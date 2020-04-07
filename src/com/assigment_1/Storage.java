@@ -1,13 +1,11 @@
 package com.assigment_1;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
-import java.io.FileOutputStream;
-import java.io.Serializable;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import javafx.util.Pair;
-import java.io.File;
+import java.io.*;
 
 public class Storage implements Serializable {
     private int overallSpace;
@@ -21,6 +19,7 @@ public class Storage implements Serializable {
 
     public void addChunkToStorage(Chunk chunk) {
 
+        System.out.println("ESPAÇO OCUPADO ANTES BACKUP: " + this.occupiedSpace);
         if ((this.overallSpace - this.occupiedSpace) < chunk.data.length) {
             System.out.println("Peer doesn't have space for chunk number " + chunk.chunkNo + " of " + chunk.fileId + " from " + chunk.senderId);
             return;
@@ -39,17 +38,20 @@ public class Storage implements Serializable {
                 if (!file.exists()) {
                     file.getParentFile().mkdirs();
                     file.createNewFile();
-                    return;
+
+
+                    FileOutputStream fos = new FileOutputStream(filename);
+                    fos.write(chunk.data);
+
+                    fos.close();
                 }
-
-                FileOutputStream fos = new FileOutputStream(filename);
-                fos.write(chunk.data);
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
         }
+
+        System.out.println("ESPAÇO OCUPADO DEPOIS BACKUP: " + this.occupiedSpace);
 
         //SEND CHUNK STORAGE CONFIRMATION MESSAGE
         PeerClient.getMC().confirmStore(chunk.version, PeerClient.getId(), chunk.fileId, chunk.chunkNo);
@@ -60,7 +62,6 @@ public class Storage implements Serializable {
     }
 
     public void updateStoredChunksCounter(String fileId, int chunkNo, String senderId) {
-
         Pair<String, Integer> pair = new Pair<>(fileId, chunkNo);
         ArrayList<String> aux = new ArrayList<>();
         aux.add(senderId);
@@ -73,6 +74,38 @@ public class Storage implements Serializable {
             if (!curr.contains(senderId))
                 curr.add(senderId);
         }
+    }
 
+    public void deleteStoredChunksCounter(String fileId) {
+        for (HashMap.Entry<Pair<String, Integer>, ArrayList<String>> entry : storedChunksCounter.entrySet()) {
+            Pair<String, Integer> key = entry.getKey();
+            if (key.getKey().equals(fileId)) {
+                storedChunksCounter.remove(key);
+            }
+        }
+    }
+
+    public void deleteFileChunks(String fileId) {
+
+        System.out.println("ESPAÇO OCUPADO ANTES: " + occupiedSpace);
+        ArrayList<Pair<String, Integer>> keys = new ArrayList<>(storedChunks.keySet());
+
+        for (Pair<String, Integer> key : keys) {
+            if (key.getKey().equals(fileId)) {
+                String filename = PeerClient.getId() + "/" + fileId + "_" + key.getValue();
+                System.out.println(filename);
+
+                File file = new File(filename);
+
+                if (file.delete()) {
+                    Chunk chunk = storedChunks.remove(key);
+                    this.occupiedSpace = this.occupiedSpace - chunk.data.length;
+                }
+            }
+        }
+
+        System.out.println("ESPAÇO OCUPADO DEPOIS: " + occupiedSpace);
+
+         System.out.println(storedChunks);
     }
 }

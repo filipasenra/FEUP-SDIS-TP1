@@ -16,12 +16,18 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 //rmiregistry &
 //java --module-path $PATH_TO_FX --add-modules javafx.controls com.assigment_1.PeerClient 2.0 1 Peer1 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
 
+//java com.assigment_1.PeerClient 2.0 1 Peer1 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
+//java com.assigment_1.PeerClient 2.0 2 Peer2 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
+//java com.assigment_1.PeerClient 2.0 3 Peer3 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
+//java com.assigment_1.PeerClient 2.0 4 Peer4 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
+
+
 public class PeerClient {
 
     private static String id;
     private static MulticastBackupChannel MDB;
     public static MulticastControlChannel MC;
-    private static Storage storage = new Storage(1000000); ///TODO: change 100
+    private static Storage storage = new Storage(150000); ///TODO: change 100
 
     private static ScheduledThreadPoolExecutor exec = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(250);
 

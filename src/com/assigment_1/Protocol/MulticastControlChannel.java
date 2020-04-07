@@ -32,4 +32,14 @@ public class MulticastControlChannel extends MulticastChannel {
 
         PeerClient.getExec().schedule(new Thread(() -> this.sendMessage(message)), 1, TimeUnit.SECONDS);
     }
+
+    public void restoreFile(double version, String senderId, String filepath) {
+        File file = new File(filepath);
+
+        String fileID = this.generateId(file.getName(), file.lastModified(), file.getParent());
+
+        byte[] message = MessageFactory.createMessage(version, "RESTORE", senderId, fileID);
+
+        PeerClient.getExec().schedule(new Thread(() -> this.sendMessage(message)), 1, TimeUnit.SECONDS);
+    }
 }

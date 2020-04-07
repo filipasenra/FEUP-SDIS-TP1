@@ -35,7 +35,7 @@ public class TestClient {
             case "BACKUP":
                 return testClientHandler.doBackup(arguments);
             case "RESTORE":
-                //TODO
+                 return testClientHandler.doRestore(arguments);
             case "DELETE":
                 return testClientHandler.doDeletion(arguments);
             case "RECLAIM":

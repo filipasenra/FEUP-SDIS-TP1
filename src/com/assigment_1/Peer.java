@@ -35,4 +35,12 @@ public class Peer implements InterfacePeer {
 
         exec.execute(new Thread(() -> MC.deleteFile(this.version, this.id, file_path)));
     }
+
+    @Override
+    public void restore(String file_path) {
+        System.out.println("\nRESTORE SERVICE");
+        System.out.println(" > File path: " + file_path);
+
+        exec.execute(new Thread(() -> MC.restoreFile(this.version, this.id, file_path)));
+    }
 }

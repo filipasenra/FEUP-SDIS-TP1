@@ -1,9 +1,9 @@
 package com.assigment_1;
 
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.NotBoundException;
+import java.rmi.registry.LocateRegistry;
 
 public class TestClientHandler {
 

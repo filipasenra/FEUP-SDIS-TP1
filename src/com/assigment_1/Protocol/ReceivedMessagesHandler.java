@@ -1,10 +1,8 @@
 package com.assigment_1.Protocol;
 
+import javafx.util.Pair;
 import com.assigment_1.Chunk;
 import com.assigment_1.PeerClient;
-import javafx.util.Pair;
-
-import java.io.FileNotFoundException;
 
 public class ReceivedMessagesHandler implements Runnable {
 

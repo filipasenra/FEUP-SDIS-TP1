@@ -1,8 +1,7 @@
 package com.assigment_1.Protocol;
 
-import com.assigment_1.PeerClient;
 import javafx.util.Pair;
-
+import com.assigment_1.PeerClient;
 import java.util.concurrent.TimeUnit;
 
 public class PutChunkThread implements Runnable {

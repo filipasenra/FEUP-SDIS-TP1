@@ -1,10 +1,10 @@
 package com.assigment_1;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.ArrayList;
-import java.util.HashMap;
-import javafx.util.Pair;
 import java.io.*;
+import javafx.util.Pair;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Storage implements Serializable {
     private int overallSpace;

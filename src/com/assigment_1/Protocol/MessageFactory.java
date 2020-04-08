@@ -38,6 +38,17 @@ final class MessageFactory {
         return message;
     }
 
+    public static byte[] createMessage(double version, String messageType, String senderId, String fileId, int chunkNo, byte[] body){
+
+        byte[] header = createMessage(version, messageType, senderId, fileId, chunkNo);
+        byte[] message = new byte[header.length + body.length];
+
+        System.arraycopy(header,0,message,0, header.length);
+        System.arraycopy(body,0,message,header.length,body.length);
+
+        return message;
+    }
+
     public boolean parseMessage(byte[] message) {
 
         int i;

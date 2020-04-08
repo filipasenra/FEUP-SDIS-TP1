@@ -1,8 +1,12 @@
 package com.assigment_1.Protocol;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Random;
 import com.assigment_1.PeerClient;
+import javafx.util.Pair;
+
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class MulticastControlChannel extends MulticastChannel {
@@ -34,11 +38,19 @@ public class MulticastControlChannel extends MulticastChannel {
 
     public void restoreFile(double version, String senderId, String filepath) {
         File file = new File(filepath);
-
         String fileID = this.generateId(file.getName(), file.lastModified(), file.getParent());
 
-        byte[] message = MessageFactory.createMessage(version, "RESTORE", senderId, fileID);
+        ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> storedChunksCounter = PeerClient.getStorage().getStoredChunksCounter();
+        ArrayList<Pair<String, Integer>> keys = new ArrayList<>(storedChunksCounter.keySet());
 
-        PeerClient.getExec().schedule(new Thread(() -> this.sendMessage(message)), 1, TimeUnit.SECONDS);
+        for (Pair<String, Integer> pair : keys)
+        {
+            if (pair.getKey().equals(fileID))
+            {
+                System.out.println(fileID + "_" + pair.getValue());
+                byte[] message = MessageFactory.createMessage(version, "GETCHUNK", senderId, fileID, pair.getValue());
+                PeerClient.getExec().execute(new Thread(() -> this.sendMessage(message)));
+            }
+        }
     }
 }

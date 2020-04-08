@@ -1,11 +1,11 @@
 package com.assigment_1.Protocol;
 
+import com.assigment_1.Peer;
 import javafx.util.Pair;
 import com.assigment_1.Chunk;
 import com.assigment_1.PeerClient;
 
 public class ReceivedMessagesHandler implements Runnable {
-
     MessageFactory messageFactory;
     byte[] message;
 
@@ -17,7 +17,6 @@ public class ReceivedMessagesHandler implements Runnable {
     @Override
     public void run() {
 
-
         this.messageFactory = new MessageFactory();
 
         if (!messageFactory.parseMessage(this.message)) {
@@ -25,8 +24,7 @@ public class ReceivedMessagesHandler implements Runnable {
         }
 
         //Ignore messages
-        if(PeerClient.getId().equals(messageFactory.senderId))
-        {
+        if (PeerClient.getId().equals(messageFactory.senderId)) {
             //System.out.println("Ignored Message");
             return;
         }
@@ -39,10 +37,10 @@ public class ReceivedMessagesHandler implements Runnable {
                 manageStored();
                 break;
             case "GETCHUNK":
-                //TODO
+                manageGetChunk();
                 break;
             case "CHUNK":
-                //TODO
+                manageChunk();
                 break;
             case "DELETE":
                 manageDeletion();
@@ -53,12 +51,10 @@ public class ReceivedMessagesHandler implements Runnable {
             default:
                 System.err.println("NOT A VALID PROTOCOL");
         }
-
-
     }
 
     private void managePutChunk() {
-        System.out.println("RECEIVED: " +  this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo + " " + this.messageFactory.replicationDeg);
+        System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo + " " + this.messageFactory.replicationDeg);
 
         Chunk chunk = new Chunk(this.messageFactory.version, this.messageFactory.senderId, this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.replicationDeg, this.messageFactory.data);
 
@@ -78,5 +74,15 @@ public class ReceivedMessagesHandler implements Runnable {
         System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId);
 
         PeerClient.getStorage().deleteFileChunks(this.messageFactory.fileId);
+    }
+
+    private void manageGetChunk() {
+        System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
+
+        PeerClient.getMDR().sendChunk(this.messageFactory.version, PeerClient.getId(), this.messageFactory.fileId, this.messageFactory.chunkNo);
+    }
+
+    private void manageChunk() {
+        System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
     }
 }

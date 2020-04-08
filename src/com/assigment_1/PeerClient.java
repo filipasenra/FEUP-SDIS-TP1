@@ -27,7 +27,9 @@ public class PeerClient {
     private static String id;
     private static MulticastBackupChannel MDB;
     public static MulticastControlChannel MC;
-    private static Storage storage = new Storage(150000); ///TODO: change 100
+    public static MulticastDataRecoveryChannel MDR;
+
+    private static Storage storage = new Storage(1000000); ///TODO: change 100
 
     private static ScheduledThreadPoolExecutor exec = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(250);
 
@@ -55,8 +57,9 @@ public class PeerClient {
 
         MDB = new MulticastBackupChannel(MDBAddress, MDBPort);
         MC = new MulticastControlChannel(MCAddress, MCPort);
+        MDR = new MulticastDataRecoveryChannel(MDRAddress, MDRPort);
 
-        Peer obj = new Peer(version, id, MC, MDB, MDRAddress, MDRPort);
+        Peer obj = new Peer(version, id, MC, MDB, MDR);
 
         try {
             InterfacePeer peer = (InterfacePeer) UnicastRemoteObject.exportObject(obj, 0);
@@ -67,10 +70,11 @@ public class PeerClient {
             e.printStackTrace();
         }
 
-        System.out.println("Peer ready");
+        System.out.println("Peer " + getId() + " ready");
 
         exec.execute(MDB);
         exec.execute(MC);
+        exec.execute(MDR);
 
         return true;
     }
@@ -81,6 +85,10 @@ public class PeerClient {
 
     public static MulticastBackupChannel getMDB() {
         return MDB;
+    }
+
+    public static MulticastDataRecoveryChannel getMDR() {
+        return MDR;
     }
 
     public static String getId() {

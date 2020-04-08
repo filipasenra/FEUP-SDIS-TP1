@@ -10,13 +10,15 @@ public class Peer implements InterfacePeer {
 
     private MulticastBackupChannel MDB;
     private MulticastControlChannel MC;
+    private MulticastDataRecoveryChannel MDR;
     private ScheduledThreadPoolExecutor exec = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(250);
 
-    public Peer(Double version, String id, MulticastControlChannel MC, MulticastBackupChannel MDB, String MDRAddress, int MDRPort) {
+    public Peer(Double version, String id, MulticastControlChannel MC, MulticastBackupChannel MDB, MulticastDataRecoveryChannel MDR) {
         this.version = version;
         this.id = id;
         this.MDB = MDB;
         this.MC = MC;
+        this.MDR = MDR;
     }
 
     @Override

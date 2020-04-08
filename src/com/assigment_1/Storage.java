@@ -38,7 +38,6 @@ public class Storage implements Serializable {
                     file.getParentFile().mkdirs();
                     file.createNewFile();
 
-
                     FileOutputStream fos = new FileOutputStream(filename);
                     fos.write(chunk.data);
 
@@ -58,6 +57,10 @@ public class Storage implements Serializable {
 
     public ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> getStoredChunksCounter() {
         return storedChunksCounter;
+    }
+
+    private HashMap<Pair<String, Integer>, Chunk> getStoredChunks(){
+        return storedChunks;
     }
 
     public void updateStoredChunksCounter(String fileId, int chunkNo, String senderId) {

@@ -51,14 +51,19 @@ public class MulticastControlChannel extends MulticastChannel {
             }
         }
 
-
+        //IF ALL THE CHUNKS OF THE FILE WERE SAVED, PEER SENDS REQUESTS TO RECOVER THEM
         ArrayList<Pair<String, Integer>> keys = new ArrayList<>(storedChunksCounter.keySet());
+        int numChunks = 0;
         for (Pair<String, Integer> pair : keys) {
             if (pair.getKey().equals(fileID)) {
+                numChunks++;
                 System.out.println(fileID + "_" + pair.getValue());
                 byte[] message = MessageFactory.createMessage(version, "GETCHUNK", senderId, fileID, pair.getValue());
                 PeerClient.getExec().execute(new Thread(() -> this.sendMessage(message)));
             }
         }
+
+        //RECOVERING THE ALL FILE AFTER REQUESTING THEIR CHUNKS
+        PeerClient.getExec().schedule(new RestoreFileThread(fileID, filepath, numChunks), 5, TimeUnit.SECONDS);
     }
 }

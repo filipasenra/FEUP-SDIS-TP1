@@ -23,13 +23,12 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 
 public class PeerClient {
-
     private static String id;
     private static MulticastBackupChannel MDB;
     public static MulticastControlChannel MC;
     public static MulticastDataRecoveryChannel MDR;
 
-    private static Storage storage = new Storage(1000000); ///TODO: change 100
+    private static Storage storage = new Storage(10000000); ///TODO: change 100
 
     private static ScheduledThreadPoolExecutor exec = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(250);
 

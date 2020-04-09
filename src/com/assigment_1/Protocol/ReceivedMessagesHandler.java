@@ -1,6 +1,5 @@
 package com.assigment_1.Protocol;
 
-import com.assigment_1.Peer;
 import javafx.util.Pair;
 import com.assigment_1.Chunk;
 import com.assigment_1.PeerClient;

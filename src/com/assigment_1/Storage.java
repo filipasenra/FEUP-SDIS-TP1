@@ -11,10 +11,14 @@ public class Storage implements Serializable {
     private int occupiedSpace = 0;
     private HashMap<Pair<String, Integer>, Chunk> storedChunks = new HashMap<>();
     private ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> storedChunksCounter = new ConcurrentHashMap<>();
-    private HashMap<Pair<String, Integer>, byte[]> recoveredChunks = new HashMap<>();
+    private ConcurrentHashMap<Pair<String, Integer>, byte[]> recoveredChunks = new ConcurrentHashMap<>();
 
     public Storage(int overallSpace) {
         this.overallSpace = overallSpace;
+    }
+
+    public ConcurrentHashMap<Pair<String, Integer>, byte[]> getRecoveredChunks() {
+        return recoveredChunks;
     }
 
     public ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> getStoredChunksCounter() {

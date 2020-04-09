@@ -7,6 +7,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 public class Peer implements InterfacePeer {
     private String id;
     private Double version;
+    private String file_path;
 
     private MulticastBackupChannel MDB;
     private MulticastControlChannel MC;
@@ -23,6 +24,7 @@ public class Peer implements InterfacePeer {
 
     @Override
     public void backup(String file_path, int replication_degree) {
+        this.file_path = file_path;
         System.out.println("\nBACKUP SERVICE");
         System.out.println(" > File path: " + file_path);
         System.out.println(" > Replication Degree: " + replication_degree);
@@ -32,6 +34,7 @@ public class Peer implements InterfacePeer {
 
     @Override
     public void deletion(String file_path) {
+        this.file_path = file_path;
         System.out.println("\nDELETION SERVICE");
         System.out.println(" > File path: " + file_path);
 
@@ -40,6 +43,7 @@ public class Peer implements InterfacePeer {
 
     @Override
     public void restore(String file_path) {
+        this.file_path = file_path;
         System.out.println("\nRESTORE SERVICE");
         System.out.println(" > File path: " + file_path);
 

@@ -25,7 +25,7 @@ public class RestoreFileThread implements Runnable {
             Pair<String, Integer> pair = new Pair<>(fileId, i);
             byte[] chunk = PeerClient.getStorage().getRecoveredChunks().get(pair);
 
-            if(chunk == null) {
+            if(pair == null) {
                 System.out.println("Impossible to recover file because chunks are missing!");
                 return;
             }

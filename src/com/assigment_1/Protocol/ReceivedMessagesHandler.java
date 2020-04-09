@@ -4,6 +4,8 @@ import javafx.util.Pair;
 import com.assigment_1.Chunk;
 import com.assigment_1.PeerClient;
 
+import java.io.IOException;
+
 
 public class ReceivedMessagesHandler implements Runnable {
     MessageFactory messageFactory;
@@ -37,7 +39,11 @@ public class ReceivedMessagesHandler implements Runnable {
                 manageStored();
                 break;
             case "GETCHUNK":
-                manageGetChunk();
+                try {
+                    manageGetChunk();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
             case "CHUNK":
                 manageChunk();
@@ -76,7 +82,7 @@ public class ReceivedMessagesHandler implements Runnable {
         PeerClient.getStorage().deleteFileChunks(this.messageFactory.fileId);
     }
 
-    private void manageGetChunk() {
+    private void manageGetChunk() throws IOException {
         System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
 
         PeerClient.getMDR().sendChunk(this.messageFactory.version, PeerClient.getId(), this.messageFactory.fileId, this.messageFactory.chunkNo);

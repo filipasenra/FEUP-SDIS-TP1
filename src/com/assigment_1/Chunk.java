@@ -1,5 +1,9 @@
 package com.assigment_1;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
 public class Chunk {
 
     double version;
@@ -18,7 +22,16 @@ public class Chunk {
         this.data = data;
     }
 
-    public byte[] getData() {
+    public byte[] getData() throws IOException {
+        File file = new File(PeerClient.getId() + "/" + fileId + "_" + chunkNo);
+        FileInputStream fis = new FileInputStream(file);
+        byte[] data = new byte[(int) file.length()];
+        fis.read(data);
+        fis.close();
+
+        String str = new String(data, "UTF-8");
+        System.out.println(str);
+
         return data;
     }
 }

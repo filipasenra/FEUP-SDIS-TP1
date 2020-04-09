@@ -4,6 +4,7 @@ import com.assigment_1.Chunk;
 import com.assigment_1.PeerClient;
 import javafx.util.Pair;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -14,7 +15,7 @@ public class MulticastDataRecoveryChannel extends MulticastChannel {
         super(INETAddress, port);
     }
 
-    public void sendChunk(double version, String senderId, String fileID, int chunkNo) {
+    public void sendChunk(double version, String senderId, String fileID, int chunkNo) throws IOException {
         Random random = new Random();
 
         HashMap<Pair<String, Integer>, Chunk> storedChunks = PeerClient.getStorage().getStoredChunks();

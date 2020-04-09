@@ -9,7 +9,6 @@ public class Chunk {
     int replicationDeg;
     byte[] data;
 
-
     public Chunk(double version, String senderId, String fileId, int chunkNo, int replicationDeg, byte[] data) {
         this.version = version;
         this.senderId = senderId;
@@ -17,5 +16,9 @@ public class Chunk {
         this.chunkNo = chunkNo;
         this.replicationDeg = replicationDeg;
         this.data = data;
+    }
+
+    public byte[] getData() {
+        return data;
     }
 }

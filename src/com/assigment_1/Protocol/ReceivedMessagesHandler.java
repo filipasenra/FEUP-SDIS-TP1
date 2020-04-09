@@ -5,6 +5,7 @@ import javafx.util.Pair;
 import com.assigment_1.Chunk;
 import com.assigment_1.PeerClient;
 
+
 public class ReceivedMessagesHandler implements Runnable {
     MessageFactory messageFactory;
     byte[] message;
@@ -84,5 +85,6 @@ public class ReceivedMessagesHandler implements Runnable {
 
     private void manageChunk() {
         System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
+        PeerClient.getStorage().addRecoveredChunk(this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.data);
     }
 }

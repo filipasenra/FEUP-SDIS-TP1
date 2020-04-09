@@ -11,9 +11,25 @@ public class Storage implements Serializable {
     private int occupiedSpace = 0;
     private HashMap<Pair<String, Integer>, Chunk> storedChunks = new HashMap<>();
     private ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> storedChunksCounter = new ConcurrentHashMap<>();
+    private HashMap<Pair<String, Integer>, byte[]> recoveredChunks = new HashMap<>();
 
     public Storage(int overallSpace) {
         this.overallSpace = overallSpace;
+    }
+
+    public ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> getStoredChunksCounter() {
+        return storedChunksCounter;
+    }
+
+    public HashMap<Pair<String, Integer>, Chunk> getStoredChunks(){
+        return storedChunks;
+    }
+
+    public void addRecoveredChunk(String fileId, int chunkNo, byte[] data) {
+        Pair<String, Integer> pair = new Pair<>(fileId, chunkNo);
+        if(!recoveredChunks.containsKey(pair)) {
+            recoveredChunks.put(pair, data);
+        }
     }
 
     public void addChunkToStorage(Chunk chunk) {
@@ -53,14 +69,6 @@ public class Storage implements Serializable {
 
         //SEND CHUNK STORAGE CONFIRMATION MESSAGE
         PeerClient.getMC().confirmStore(chunk.version, PeerClient.getId(), chunk.fileId, chunk.chunkNo);
-    }
-
-    public ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> getStoredChunksCounter() {
-        return storedChunksCounter;
-    }
-
-    private HashMap<Pair<String, Integer>, Chunk> getStoredChunks(){
-        return storedChunks;
     }
 
     public void updateStoredChunksCounter(String fileId, int chunkNo, String senderId) {

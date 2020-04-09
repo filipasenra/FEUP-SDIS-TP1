@@ -6,6 +6,7 @@ import com.assigment_1.PeerClient;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 public class RestoreFileThread implements Runnable {
     String fileId;
@@ -20,19 +21,34 @@ public class RestoreFileThread implements Runnable {
 
     @Override
     public void run() {
+        String recovered = filename + "_";
+        File file = new File(recovered);
+
+        if (file.exists()) {
+            file.delete();
+        }
+
         for (int i = 0; i < numChunks; i++) {
             System.out.println(i);
             Pair<String, Integer> pair = new Pair<>(fileId, i);
-            byte[] chunk = PeerClient.getStorage().getRecoveredChunks().get(pair);
 
+            System.out.println(pair);
             if (pair == null) {
                 System.out.println("Impossible to recover file because chunks are missing!");
                 return;
             }
 
-            String recovered = filename + "_";
+            byte[] chunk = PeerClient.getStorage().getRecoveredChunks().get(pair);
+            try {
+                String str = new String(chunk, "UTF-8");
+                System.out.println(str);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
 
-            File file = new File(recovered);
+
+
+
             try {
                 if (!file.exists()) {
                     file.getParentFile().mkdirs();

@@ -64,6 +64,6 @@ public class MulticastControlChannel extends MulticastChannel {
         }
 
         //RECOVERING THE ALL FILE AFTER REQUESTING THEIR CHUNKS
-        PeerClient.getExec().schedule(new RestoreFileThread(fileID, filepath, numChunks), 5, TimeUnit.SECONDS);
+        PeerClient.getExec().schedule(new RestoreFileThread(fileID, filepath, numChunks), 10, TimeUnit.SECONDS);
     }
 }

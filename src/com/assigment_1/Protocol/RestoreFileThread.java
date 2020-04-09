@@ -20,12 +20,12 @@ public class RestoreFileThread implements Runnable {
 
     @Override
     public void run() {
-        for (int i=0; i<numChunks; i++) {
+        for (int i = 0; i < numChunks; i++) {
             System.out.println(i);
             Pair<String, Integer> pair = new Pair<>(fileId, i);
             byte[] chunk = PeerClient.getStorage().getRecoveredChunks().get(pair);
 
-            if(pair == null) {
+            if (pair == null) {
                 System.out.println("Impossible to recover file because chunks are missing!");
                 return;
             }
@@ -37,12 +37,12 @@ public class RestoreFileThread implements Runnable {
                 if (!file.exists()) {
                     file.getParentFile().mkdirs();
                     file.createNewFile();
-
-                    FileOutputStream fos = new FileOutputStream(recovered);
-                    fos.write(chunk);
-
-                    fos.close();
                 }
+
+                FileOutputStream fos = new FileOutputStream(recovered, true);
+                fos.write(chunk);
+
+                fos.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

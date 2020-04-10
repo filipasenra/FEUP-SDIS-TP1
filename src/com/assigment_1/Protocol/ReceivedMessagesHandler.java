@@ -85,7 +85,7 @@ public class ReceivedMessagesHandler implements Runnable {
     private void manageGetChunk() throws IOException {
         System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
 
-        PeerClient.getMDR().sendChunk(this.messageFactory.version, PeerClient.getId(), this.messageFactory.fileId, this.messageFactory.chunkNo);
+        PeerClient.getMDR().sendChunk(this.messageFactory.version, this.messageFactory.fileId, this.messageFactory.chunkNo);
     }
 
     private void manageChunk() {

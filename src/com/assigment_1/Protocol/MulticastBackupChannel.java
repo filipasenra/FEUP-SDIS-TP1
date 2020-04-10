@@ -1,13 +1,14 @@
 package com.assigment_1.Protocol;
 
-import java.io.File;
+import com.assigment_1.PeerClient;
 import javafx.util.Pair;
-import java.util.Arrays;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.io.FileInputStream;
-import com.assigment_1.PeerClient;
-import java.io.BufferedInputStream;
+import java.util.Arrays;
 
 public class MulticastBackupChannel extends MulticastChannel {
 
@@ -44,6 +45,7 @@ public class MulticastBackupChannel extends MulticastChannel {
 
                 chunkNr++;
             }
+
 
         } catch (IOException e) {
             e.printStackTrace();

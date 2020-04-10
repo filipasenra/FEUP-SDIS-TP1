@@ -1,11 +1,13 @@
 package com.assigment_1.Protocol;
 
-import java.net.*;
-import java.io.IOException;
 import com.assigment_1.PeerClient;
-import java.security.MessageDigest;
-import java.util.concurrent.Executors;
+
+import java.io.IOException;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.Arrays;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class MulticastChannel implements Runnable {
@@ -61,8 +63,11 @@ public class MulticastChannel implements Runnable {
             while (true) {
                 DatagramPacket msgPacket = new DatagramPacket(buffer, buffer.length);
                 receiverSocket.receive(msgPacket);
+
+                byte[] bufferCopy = Arrays.copyOf(buffer, msgPacket.getLength());
+
                 
-                PeerClient.getExec().execute(new ReceivedMessagesHandler(buffer));
+                PeerClient.getExec().execute(new ReceivedMessagesHandler(bufferCopy));
             }
         } catch (IOException ex) {
             ex.printStackTrace();

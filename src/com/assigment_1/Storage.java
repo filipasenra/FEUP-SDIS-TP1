@@ -1,9 +1,13 @@
 package com.assigment_1;
 
-import java.io.*;
 import javafx.util.Pair;
-import java.util.HashMap;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Storage implements Serializable {
@@ -54,6 +58,7 @@ public class Storage implements Serializable {
 
             File file = new File(filename);
             try {
+
                 if (!file.exists()) {
                     file.getParentFile().mkdirs();
                     file.createNewFile();
@@ -119,7 +124,5 @@ public class Storage implements Serializable {
         }
 
         System.out.println("ESPAÇO OCUPADO DEPOIS: " + occupiedSpace);
-
-         System.out.println(storedChunks);
     }
 }

@@ -1,12 +1,11 @@
 package com.assigment_1.Protocol;
 
-import javafx.util.Pair;
 import com.assigment_1.PeerClient;
+import javafx.util.Pair;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 public class RestoreFileThread implements Runnable {
     String fileId;
@@ -24,10 +23,6 @@ public class RestoreFileThread implements Runnable {
         String recovered = filename + "_";
         File file = new File(recovered);
 
-        if (file.exists()) {
-            file.delete();
-        }
-
         for (int i = 0; i < numChunks; i++) {
             System.out.println(i);
             Pair<String, Integer> pair = new Pair<>(fileId, i);
@@ -39,18 +34,12 @@ public class RestoreFileThread implements Runnable {
             }
 
             byte[] chunk = PeerClient.getStorage().getRecoveredChunks().get(pair);
-            try {
-                String str = new String(chunk, "UTF-8");
-                System.out.println(str);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-
-
 
             try {
-                if (!file.exists()) {
+                if (file.exists()) {
+                    file.delete();
+
+                } else {
                     file.getParentFile().mkdirs();
                     file.createNewFile();
                 }

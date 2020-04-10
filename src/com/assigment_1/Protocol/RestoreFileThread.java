@@ -19,13 +19,13 @@ public class RestoreFileThread implements Runnable {
         this.fileId = fileId;
     }
 
-    @Override
-    public void run() {
-        String extension = "";
-        String name = "";
-        String recovered = "";
+    public String getRecoveredName() {
+        String extension;
+        String name;
+        String recovered;
 
         int j = filename.lastIndexOf('.');
+
         if (j > 0) {
             extension = filename.substring(j+1);
             name = filename.substring(0, j);
@@ -34,8 +34,13 @@ public class RestoreFileThread implements Runnable {
         else
             recovered = filename + "_";
 
+        return recovered;
+    }
 
-        System.out.println(recovered);
+    @Override
+    public void run() {
+
+        String recovered = getRecoveredName();
 
         File file = new File(recovered);
 

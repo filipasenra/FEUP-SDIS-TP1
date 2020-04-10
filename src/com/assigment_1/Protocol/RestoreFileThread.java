@@ -6,6 +6,7 @@ import javafx.util.Pair;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 
 public class RestoreFileThread implements Runnable {
     String fileId;
@@ -20,7 +21,22 @@ public class RestoreFileThread implements Runnable {
 
     @Override
     public void run() {
-        String recovered = filename + "_";
+        String extension = "";
+        String name = "";
+        String recovered = "";
+
+        int j = filename.lastIndexOf('.');
+        if (j > 0) {
+            extension = filename.substring(j+1);
+            name = filename.substring(0, j);
+            recovered =  name + "_recovered" + "." + extension;
+        }
+        else
+            recovered = filename + "_";
+
+
+        System.out.println(recovered);
+
         File file = new File(recovered);
 
         if (file.exists()) {
@@ -30,12 +46,6 @@ public class RestoreFileThread implements Runnable {
         for (int i = 0; i < numChunks; i++) {
             System.out.println(i);
             Pair<String, Integer> pair = new Pair<>(fileId, i);
-
-            System.out.println(pair);
-            if (pair == null) {
-                System.out.println("Impossible to recover file because chunks are missing!");
-                return;
-            }
 
             byte[] chunk = PeerClient.getStorage().getRecoveredChunks().get(pair);
 
@@ -54,6 +64,6 @@ public class RestoreFileThread implements Runnable {
             }
         }
 
-        System.out.println("File recovered successfuly!");
+        System.out.println("File recovered successfully!");
     }
 }

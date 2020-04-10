@@ -20,7 +20,7 @@ public class MulticastDataRecoveryChannel extends MulticastChannel {
 
         HashMap<Pair<String, Integer>, Chunk> storedChunks = PeerClient.getStorage().getStoredChunks();
 
-        Chunk chunk = storedChunks.get(new Pair<String, Integer>(fileID, chunkNo));
+        Chunk chunk = storedChunks.get(new Pair<>(fileID, chunkNo));
         byte[] data = chunk.getData();
 
         byte[] message = MessageFactory.createMessage(version, "CHUNK", senderId, fileID, chunkNo, data);

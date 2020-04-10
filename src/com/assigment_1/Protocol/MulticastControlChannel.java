@@ -57,7 +57,6 @@ public class MulticastControlChannel extends MulticastChannel {
         for (Pair<String, Integer> pair : keys) {
             if (pair.getKey().equals(fileID)) {
                 numChunks++;
-                System.out.println(fileID + "_" + pair.getValue());
                 byte[] message = MessageFactory.createMessage(version, "GETCHUNK", senderId, fileID, pair.getValue());
                 PeerClient.getExec().execute(new Thread(() -> this.sendMessage(message)));
             }

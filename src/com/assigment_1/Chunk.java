@@ -29,9 +29,6 @@ public class Chunk {
         fis.read(data);
         fis.close();
 
-        String str = new String(data, "UTF-8");
-        System.out.println(str);
-
         return data;
     }
 }

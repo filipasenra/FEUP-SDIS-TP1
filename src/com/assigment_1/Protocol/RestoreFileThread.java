@@ -1,12 +1,11 @@
 package com.assigment_1.Protocol;
 
-import com.assigment_1.PeerClient;
-import javafx.util.Pair;
-
 import java.io.File;
-import java.io.FileOutputStream;
+import javafx.util.Pair;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.FileOutputStream;
+import com.assigment_1.PeerClient;
+
 
 public class RestoreFileThread implements Runnable {
     String fileId;
@@ -27,11 +26,10 @@ public class RestoreFileThread implements Runnable {
         int j = filename.lastIndexOf('.');
 
         if (j > 0) {
-            extension = filename.substring(j+1);
+            extension = filename.substring(j + 1);
             name = filename.substring(0, j);
-            recovered =  name + "_recovered" + "." + extension;
-        }
-        else
+            recovered = name + "_recovered" + "." + extension;
+        } else
             recovered = filename + "_";
 
         return recovered;
@@ -44,28 +42,32 @@ public class RestoreFileThread implements Runnable {
 
         File file = new File(recovered);
 
-        if (file.exists()) {
-            file.delete();
-        }
+        if (file.exists()) file.delete();
 
         for (int i = 0; i < numChunks; i++) {
             System.out.println(i);
             Pair<String, Integer> pair = new Pair<>(fileId, i);
 
-            byte[] chunk = PeerClient.getStorage().getRecoveredChunks().get(pair);
+            if (!PeerClient.getStorage().getRecoveredChunks().containsKey(pair)) {
+                System.out.println("Impossible to restore file because some chunks are missing!");
+                return;
+            } else {
 
-            try {
-                if (!file.exists()) {
-                    file.getParentFile().mkdirs();
-                    file.createNewFile();
+                byte[] chunk = PeerClient.getStorage().getRecoveredChunks().get(pair);
+
+                try {
+                    if (!file.exists()) {
+                        file.getParentFile().mkdirs();
+                        file.createNewFile();
+                    }
+
+                    FileOutputStream fos = new FileOutputStream(recovered, true);
+                    fos.write(chunk);
+
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-
-                FileOutputStream fos = new FileOutputStream(recovered, true);
-                fos.write(chunk);
-
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
 

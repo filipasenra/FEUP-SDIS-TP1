@@ -23,6 +23,10 @@ public class RestoreFileThread implements Runnable {
         String recovered = filename + "_";
         File file = new File(recovered);
 
+        if (file.exists()) {
+            file.delete();
+        }
+
         for (int i = 0; i < numChunks; i++) {
             System.out.println(i);
             Pair<String, Integer> pair = new Pair<>(fileId, i);
@@ -36,10 +40,7 @@ public class RestoreFileThread implements Runnable {
             byte[] chunk = PeerClient.getStorage().getRecoveredChunks().get(pair);
 
             try {
-                if (file.exists()) {
-                    file.delete();
-
-                } else {
+                if (!file.exists()) {
                     file.getParentFile().mkdirs();
                     file.createNewFile();
                 }

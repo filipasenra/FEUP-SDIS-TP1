@@ -45,4 +45,16 @@ public class Peer implements InterfacePeer {
 
         exec.execute(new Thread(() -> MC.restoreFile(this.version, this.id, file_path)));
     }
+
+    @Override
+    public void reclaim(String disk_space) {
+        System.out.println("\nRECLAIM SERVICE");
+        System.out.println(" > Disk space: " + disk_space + " MBytes");
+
+        PeerClient.getStorage().setOverallSpace(Integer.parseInt(disk_space));
+
+        System.out.println(PeerClient.getStorage().getOverallSpace());
+    }
+
+
 }

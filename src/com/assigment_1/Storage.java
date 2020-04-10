@@ -12,30 +12,41 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Storage implements Serializable {
     private int overallSpace;
-    private int occupiedSpace = 0;
+    private int occupiedSpace;
     private HashMap<Pair<String, Integer>, Chunk> storedChunks = new HashMap<>();
     private ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> storedChunksCounter = new ConcurrentHashMap<>();
     private ConcurrentHashMap<Pair<String, Integer>, byte[]> recoveredChunks = new ConcurrentHashMap<>();
 
-    public Storage(int overallSpace) {
-        this.overallSpace = overallSpace;
+
+    //UNTIL THE CLIENT DEFINES THE MAXIMUM DISK SIZE THAT CAN BE USED FOR STORING CHUNKS, WE DON'T DEFINE THE LIMIT
+    public Storage() {
+        this.occupiedSpace = 0;
+        this.overallSpace = -1;
+    }
+
+    public void setOverallSpace(int overallSpace) {
+        this.overallSpace = overallSpace*1000;
     }
 
     public ConcurrentHashMap<Pair<String, Integer>, byte[]> getRecoveredChunks() {
         return recoveredChunks;
     }
 
+    public int getOverallSpace() {
+        return overallSpace;
+    }
+
     public ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> getStoredChunksCounter() {
         return storedChunksCounter;
     }
 
-    public HashMap<Pair<String, Integer>, Chunk> getStoredChunks(){
+    public HashMap<Pair<String, Integer>, Chunk> getStoredChunks() {
         return storedChunks;
     }
 
     public void addRecoveredChunk(String fileId, int chunkNo, byte[] data) {
         Pair<String, Integer> pair = new Pair<>(fileId, chunkNo);
-        if(!recoveredChunks.containsKey(pair)) {
+        if (!recoveredChunks.containsKey(pair)) {
             recoveredChunks.put(pair, data);
         }
     }
@@ -43,7 +54,8 @@ public class Storage implements Serializable {
     public void addChunkToStorage(Chunk chunk) {
 
         System.out.println("ESPAÇO OCUPADO ANTES BACKUP: " + this.occupiedSpace);
-        if ((this.overallSpace - this.occupiedSpace) < chunk.data.length) {
+
+        if ((this.overallSpace - this.occupiedSpace) < chunk.data.length && (this.overallSpace != -1)) {
             System.out.println("Peer doesn't have space for chunk number " + chunk.chunkNo + " of " + chunk.fileId + " from " + chunk.senderId);
             return;
         }

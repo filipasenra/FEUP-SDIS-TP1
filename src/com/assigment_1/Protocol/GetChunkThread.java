@@ -32,9 +32,16 @@ public class GetChunkThread implements Runnable {
         ConcurrentHashMap<Pair<String, Integer>, byte[]> recoveredChunks = PeerClient.getStorage().getRecoveredChunks();
 
         if (!recoveredChunks.containsKey(pair)) {
-            storedChunks.get(new Pair<>(fileId, chunkNo));
-            byte[] message = MessageFactory.createMessage(version, "REMOVED", senderId, fileId, chunkNo);
-            PeerClient.getExec().execute(new Thread(() -> PeerClient.getMC().sendMessage(message)));
+            Chunk chunk = storedChunks.get(new Pair<>(fileId, chunkNo));
+            byte[] data = new byte[sizeOfChunks];
+            try {
+                data = chunk.getData();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            byte[] message = MessageFactory.createMessage(version, "CHUNK", senderId, fileId, chunkNo, data);
+            PeerClient.getExec().execute(new Thread(() -> PeerClient.getMDR().sendMessage(message)));
         }
     }
 }

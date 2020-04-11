@@ -39,7 +39,8 @@ public class TestClient {
             case "DELETE":
                 return testClientHandler.doDeletion(arguments);
             case "RECLAIM":
-                return testClientHandler.doReclaim(arguments);
+                //TODO
+                break;
             case "STATE":
                 //TODO
                 break;

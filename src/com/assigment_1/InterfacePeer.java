@@ -9,7 +9,5 @@ public interface InterfacePeer extends Remote {
 
     void deletion(String file_path) throws RemoteException;
 
-    void restore(String file_path) throws RemoteException;
-
-    void reclaim(String disk_space) throws RemoteException;
+    public void restore(String file_path) throws RemoteException;
 }

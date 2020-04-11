@@ -28,7 +28,7 @@ public class PeerClient {
     public static MulticastControlChannel MC;
     public static MulticastDataRecoveryChannel MDR;
 
-    private static Storage storage = new Storage();
+    private static Storage storage = new Storage(10000000); ///TODO: change 100
 
     private static ScheduledThreadPoolExecutor exec = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(250);
 

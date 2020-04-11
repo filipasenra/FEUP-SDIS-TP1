@@ -69,20 +69,4 @@ public class TestClientHandler {
 
         return true;
     }
-
-    public boolean doReclaim(String[] arguments){
-        if(arguments.length != 1) {
-            System.err.println("Wrong no. of arguments");
-            System.err.println("Usage: <rmi_peer_ap> RECLAIM <disk_space_to_use (in KBytes)>");
-            return false;
-        }
-
-        try {
-            peer.reclaim(arguments[0]);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
-        return true;
-    }
 }

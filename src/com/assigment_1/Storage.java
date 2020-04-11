@@ -12,13 +12,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Storage implements Serializable {
     private int overallSpace;
-    private int occupiedSpace = 0;
+    private int occupiedSpace;
     private HashMap<Pair<String, Integer>, Chunk> storedChunks = new HashMap<>();
     private ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> storedChunksCounter = new ConcurrentHashMap<>();
     private ConcurrentHashMap<Pair<String, Integer>, byte[]> recoveredChunks = new ConcurrentHashMap<>();
 
-    public Storage(int overallSpace) {
-        this.overallSpace = overallSpace;
+    public Storage() {
+        this.overallSpace = -1;
+        this.occupiedSpace = 0;
+    }
+
+    public void setOverallSpace(int overallSpace) {
+        this.overallSpace = overallSpace * 1000;
+
+        System.out.println(this.overallSpace);
     }
 
     public ConcurrentHashMap<Pair<String, Integer>, byte[]> getRecoveredChunks() {
@@ -43,7 +50,7 @@ public class Storage implements Serializable {
     public void addChunkToStorage(Chunk chunk) {
 
         System.out.println("ESPAÇO OCUPADO ANTES BACKUP: " + this.occupiedSpace);
-        if ((this.overallSpace - this.occupiedSpace) < chunk.data.length) {
+        if ((overallSpace != -1) && ((this.overallSpace - this.occupiedSpace) < chunk.data.length)) {
             System.out.println("Peer doesn't have space for chunk number " + chunk.chunkNo + " of " + chunk.fileId + " from " + chunk.senderId);
             return;
         }

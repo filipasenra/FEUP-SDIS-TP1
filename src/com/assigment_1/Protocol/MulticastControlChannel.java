@@ -46,7 +46,7 @@ public class MulticastControlChannel extends MulticastChannel {
         ArrayList<ArrayList<String>> values = new ArrayList<>(storedChunksCounter.values());
         for (ArrayList<String> value : values) {
             if(value.size() == 0) {
-                System.out.println("Impossible to restore file because some chunks missing!\n");
+                System.out.println("Impossible to restore file because some chunks we're not backed up!\n");
                 return;
             }
         }

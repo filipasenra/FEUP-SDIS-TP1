@@ -1,5 +1,6 @@
 package com.assigment_1;
 
+import com.assigment_1.Protocol.MessageFactory;
 import javafx.util.Pair;
 
 import java.io.File;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Storage implements Serializable {
@@ -25,7 +27,31 @@ public class Storage implements Serializable {
     public void setOverallSpace(int overallSpace) {
         this.overallSpace = overallSpace * 1000;
 
-        System.out.println(this.overallSpace);
+        System.out.println("ESPAÇO OCUPADO ANTES DO RECLAIM: " + this.occupiedSpace);
+
+        while(this.overallSpace < occupiedSpace) {
+            Map.Entry<Pair<String, Integer>, Chunk> entry = this.storedChunks.entrySet().iterator().next();
+            Chunk chunkToEliminate = entry.getValue();
+
+            int dataSize = 0;
+            try {
+                dataSize = chunkToEliminate.getData().length;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (chunkToEliminate.deleteData()) {
+                this.storedChunks.remove(entry.getKey(), entry.getValue());
+                this.occupiedSpace -= dataSize;
+
+                byte[] message = MessageFactory.createMessage(chunkToEliminate.version, "REMOVED", PeerClient.getId(), chunkToEliminate.fileId, chunkToEliminate.chunkNo);
+                PeerClient.getMC().sendMessage(message);
+            }
+
+        }
+
+        System.out.println("ESPAÇO OCUPADO DEPOIS DO RECLAIM: " + this.occupiedSpace);
+
     }
 
     public ConcurrentHashMap<Pair<String, Integer>, byte[]> getRecoveredChunks() {
@@ -47,10 +73,10 @@ public class Storage implements Serializable {
         }
     }
 
-    public void addChunkToStorage(Chunk chunk) {
+    public void addChunkToStorage(Chunk chunk, byte[] data) {
 
         System.out.println("ESPAÇO OCUPADO ANTES BACKUP: " + this.occupiedSpace);
-        if ((overallSpace != -1) && ((this.overallSpace - this.occupiedSpace) < chunk.data.length)) {
+        if ((overallSpace != -1) && ((this.overallSpace - this.occupiedSpace) < data.length)) {
             System.out.println("Peer doesn't have space for chunk number " + chunk.chunkNo + " of " + chunk.fileId + " from " + chunk.senderId);
             return;
         }
@@ -59,7 +85,7 @@ public class Storage implements Serializable {
 
         if (!storedChunks.containsKey(pair)) {
             this.storedChunks.put(pair, chunk);
-            this.occupiedSpace += chunk.data.length;
+            this.occupiedSpace += data.length;
 
             String filename = PeerClient.getId() + "/" + chunk.fileId + "_" + chunk.chunkNo;
 
@@ -71,7 +97,7 @@ public class Storage implements Serializable {
                     file.createNewFile();
 
                     FileOutputStream fos = new FileOutputStream(filename);
-                    fos.write(chunk.data);
+                    fos.write(data);
 
                     fos.close();
                 }
@@ -118,14 +144,19 @@ public class Storage implements Serializable {
 
         for (Pair<String, Integer> key : keys) {
             if (key.getKey().equals(fileId)) {
-                String filename = PeerClient.getId() + "/" + fileId + "_" + key.getValue();
-                System.out.println(filename);
+                Chunk chunkToEliminate = storedChunks.get(key);
 
-                File file = new File(filename);
+                int dataSize = 0;
 
-                if (file.delete()) {
-                    Chunk chunk = storedChunks.remove(key);
-                    this.occupiedSpace = this.occupiedSpace - chunk.data.length;
+                try {
+                    dataSize = chunkToEliminate.getData().length;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                if (chunkToEliminate.deleteData()) {
+                    storedChunks.remove(key);
+                    this.occupiedSpace = this.occupiedSpace - dataSize;
                 }
             }
         }

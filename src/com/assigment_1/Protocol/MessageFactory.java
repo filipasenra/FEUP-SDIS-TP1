@@ -2,7 +2,7 @@ package com.assigment_1.Protocol;
 
 import java.util.Arrays;
 
-final class MessageFactory {
+public final class MessageFactory {
     static String CRLF = "\r\n";
     double version;
     String messageType;

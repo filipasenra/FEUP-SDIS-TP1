@@ -11,15 +11,20 @@ public class Chunk {
     String fileId;
     int chunkNo;
     int replicationDeg;
-    byte[] data;
 
-    public Chunk(double version, String senderId, String fileId, int chunkNo, int replicationDeg, byte[] data) {
+    public Chunk(double version, String senderId, String fileId, int chunkNo, int replicationDeg) {
         this.version = version;
         this.senderId = senderId;
         this.fileId = fileId;
         this.chunkNo = chunkNo;
         this.replicationDeg = replicationDeg;
-        this.data = data;
+    }
+
+    public boolean deleteData() {
+
+        File file = new File(PeerClient.getId() + "/" + fileId + "_" + chunkNo);
+
+        return file.delete();
     }
 
     public byte[] getData() throws IOException {

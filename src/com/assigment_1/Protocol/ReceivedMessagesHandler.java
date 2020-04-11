@@ -1,10 +1,8 @@
 package com.assigment_1.Protocol;
 
-import javafx.util.Pair;
 import com.assigment_1.Chunk;
 import com.assigment_1.PeerClient;
-
-import java.io.IOException;
+import javafx.util.Pair;
 
 
 public class ReceivedMessagesHandler implements Runnable {
@@ -39,11 +37,7 @@ public class ReceivedMessagesHandler implements Runnable {
                 manageStored();
                 break;
             case "GETCHUNK":
-                try {
-                    manageGetChunk();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                manageGetChunk();
                 break;
             case "CHUNK":
                 manageChunk();
@@ -52,7 +46,7 @@ public class ReceivedMessagesHandler implements Runnable {
                 manageDeletion();
                 break;
             case "REMOVED":
-                //TODO
+                manageRemove();
                 break;
             default:
                 System.err.println("NOT A VALID PROTOCOL");
@@ -62,9 +56,9 @@ public class ReceivedMessagesHandler implements Runnable {
     private void managePutChunk() {
         System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo + " " + this.messageFactory.replicationDeg);
 
-        Chunk chunk = new Chunk(this.messageFactory.version, this.messageFactory.senderId, this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.replicationDeg, this.messageFactory.data);
+        Chunk chunk = new Chunk(this.messageFactory.version, this.messageFactory.senderId, this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.replicationDeg);
 
-        PeerClient.getStorage().addChunkToStorage(chunk);
+        PeerClient.getStorage().addChunkToStorage(chunk, this.messageFactory.data);
     }
 
     private void manageStored() {
@@ -82,7 +76,14 @@ public class ReceivedMessagesHandler implements Runnable {
         PeerClient.getStorage().deleteFileChunks(this.messageFactory.fileId);
     }
 
-    private void manageGetChunk() throws IOException {
+
+    private void manageRemove() {
+        System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
+
+        //TODO: rest of it
+    }
+
+    private void manageGetChunk() {
         System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
 
         PeerClient.getMDR().sendChunk(this.messageFactory.version, this.messageFactory.fileId, this.messageFactory.chunkNo);

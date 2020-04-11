@@ -44,9 +44,13 @@ public class MulticastControlChannel extends MulticastChannel {
         //CHECK IF ALL THE CHUNKS OF THE FILE WERE PREVIOUSLY STORED DURING BACKUP
         //IF NOT IT'S IMPOSSIBLE TO RECOVER THE FILE AND THE RESTORE ENDS HERE
         ArrayList<ArrayList<String>> values = new ArrayList<>(storedChunksCounter.values());
+        if (values.size() == 0) {
+            System.out.println("Impossible to restore file because some or all chunks are not backed up!\n");
+            return;
+        }
         for (ArrayList<String> value : values) {
             if(value.size() == 0) {
-                System.out.println("Impossible to restore file because some chunks we're not backed up!\n");
+                System.out.println("Impossible to restore file because some or all chunks are not backed up!\n");
                 return;
             }
         }

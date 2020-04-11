@@ -1,5 +1,6 @@
 package com.assigment_1.Protocol;
 
+import com.assigment_1.Chunk;
 import com.assigment_1.PeerClient;
 import javafx.util.Pair;
 
@@ -21,6 +22,28 @@ public class MulticastControlChannel extends MulticastChannel {
         Random random = new Random();
 
         this.exec.schedule(new Thread(() -> this.sendMessage(message)), random.nextInt(401), TimeUnit.MILLISECONDS);
+    }
+
+    public void reclaimSpace(double version, String senderId) {
+        while (PeerClient.getStorage().getOverallSpace() < PeerClient.getStorage().getOccupiedSpace()) {
+            ArrayList<Pair<String, Integer>> keys = new ArrayList<>(PeerClient.getStorage().getStoredChunks().keySet());
+            System.out.println(keys.size());
+
+            Pair<String, Integer> key = keys.get(0);
+
+            String filename = PeerClient.getId() + "/" + key.getKey() + "_" + key.getValue();
+            System.out.println(filename);
+
+            File file = new File(filename);
+
+            if (file.delete()) {
+                Chunk chunk = PeerClient.getStorage().removeStoredChunk(key);
+                PeerClient.getStorage().setOccupiedSpace(PeerClient.getStorage().getOccupiedSpace() - chunk.getData().length);
+            }
+
+            byte[] message = MessageFactory.createMessage(version, "REMOVED", senderId, key.getKey(), key.getValue());
+            PeerClient.getExec().execute(new Thread(() -> this.sendMessage(message)));
+        }
     }
 
     public void deleteFile(double version, String senderId, String filepath) {
@@ -45,7 +68,7 @@ public class MulticastControlChannel extends MulticastChannel {
         //IF NOT IT'S IMPOSSIBLE TO RECOVER THE FILE AND THE RESTORE ENDS HERE
         ArrayList<ArrayList<String>> values = new ArrayList<>(storedChunksCounter.values());
         for (ArrayList<String> value : values) {
-            if(value.size() == 0) {
+            if (value.size() == 0) {
                 System.out.println("Impossible to restore file because some chunks missing!\n");
                 return;
             }

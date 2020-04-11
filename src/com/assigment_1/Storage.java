@@ -17,7 +17,6 @@ public class Storage implements Serializable {
     private ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> storedChunksCounter = new ConcurrentHashMap<>();
     private ConcurrentHashMap<Pair<String, Integer>, byte[]> recoveredChunks = new ConcurrentHashMap<>();
 
-
     //UNTIL THE CLIENT DEFINES THE MAXIMUM DISK SIZE THAT CAN BE USED FOR STORING CHUNKS, WE DON'T DEFINE THE LIMIT
     public Storage() {
         this.occupiedSpace = 0;
@@ -28,12 +27,26 @@ public class Storage implements Serializable {
         this.overallSpace = overallSpace*1000;
     }
 
+    public void setOccupiedSpace(int occupiedSpace) {
+        this.occupiedSpace = occupiedSpace;
+    }
+
     public ConcurrentHashMap<Pair<String, Integer>, byte[]> getRecoveredChunks() {
         return recoveredChunks;
     }
 
+    public Chunk removeStoredChunk(Pair<String, Integer> key) {
+        Chunk chunk = storedChunks.remove(key);
+
+        return chunk;
+    }
+
     public int getOverallSpace() {
         return overallSpace;
+    }
+
+    public int getOccupiedSpace() {
+        return occupiedSpace;
     }
 
     public ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> getStoredChunksCounter() {
@@ -52,9 +65,6 @@ public class Storage implements Serializable {
     }
 
     public void addChunkToStorage(Chunk chunk) {
-
-        System.out.println("ESPAÇO OCUPADO ANTES BACKUP: " + this.occupiedSpace);
-
         if ((this.overallSpace - this.occupiedSpace) < chunk.data.length && (this.overallSpace != -1)) {
             System.out.println("Peer doesn't have space for chunk number " + chunk.chunkNo + " of " + chunk.fileId + " from " + chunk.senderId);
             return;
@@ -86,8 +96,6 @@ public class Storage implements Serializable {
 
         }
 
-        System.out.println("ESPAÇO OCUPADO DEPOIS BACKUP: " + this.occupiedSpace);
-
         //SEND CHUNK STORAGE CONFIRMATION MESSAGE
         PeerClient.getMC().confirmStore(chunk.version, PeerClient.getId(), chunk.fileId, chunk.chunkNo);
     }
@@ -117,8 +125,6 @@ public class Storage implements Serializable {
     }
 
     public void deleteFileChunks(String fileId) {
-
-        System.out.println("ESPAÇO OCUPADO ANTES: " + occupiedSpace);
         ArrayList<Pair<String, Integer>> keys = new ArrayList<>(storedChunks.keySet());
 
         for (Pair<String, Integer> key : keys) {
@@ -134,7 +140,5 @@ public class Storage implements Serializable {
                 }
             }
         }
-
-        System.out.println("ESPAÇO OCUPADO DEPOIS: " + occupiedSpace);
     }
 }

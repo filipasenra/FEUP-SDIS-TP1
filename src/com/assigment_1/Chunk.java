@@ -22,7 +22,11 @@ public class Chunk {
         this.data = data;
     }
 
-    public byte[] getData() throws IOException {
+    public byte[] getData() {
+        return data;
+    }
+
+    public byte[] getFileData() throws IOException {
         File file = new File(PeerClient.getId() + "/" + fileId + "_" + chunkNo);
         FileInputStream fis = new FileInputStream(file);
         byte[] data = new byte[(int) file.length()];

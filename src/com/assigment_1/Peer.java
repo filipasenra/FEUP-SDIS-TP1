@@ -53,7 +53,8 @@ public class Peer implements InterfacePeer {
 
         PeerClient.getStorage().setOverallSpace(Integer.parseInt(disk_space));
 
-        System.out.println(PeerClient.getStorage().getOverallSpace());
+        exec.execute(new Thread(() -> MC.reclaimSpace(this.version, this.id)));
+
     }
 
 

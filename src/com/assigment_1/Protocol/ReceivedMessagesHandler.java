@@ -39,11 +39,7 @@ public class ReceivedMessagesHandler implements Runnable {
                 manageStored();
                 break;
             case "GETCHUNK":
-                try {
-                    manageGetChunk();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                manageGetChunk();
                 break;
             case "CHUNK":
                 manageChunk();
@@ -52,7 +48,7 @@ public class ReceivedMessagesHandler implements Runnable {
                 manageDeletion();
                 break;
             case "REMOVED":
-                //TODO
+                manageRemoved();
                 break;
             default:
                 System.err.println("NOT A VALID PROTOCOL");
@@ -63,7 +59,6 @@ public class ReceivedMessagesHandler implements Runnable {
         System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo + " " + this.messageFactory.replicationDeg);
 
         Chunk chunk = new Chunk(this.messageFactory.version, this.messageFactory.senderId, this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.replicationDeg, this.messageFactory.data);
-
         PeerClient.getStorage().addChunkToStorage(chunk);
     }
 
@@ -71,25 +66,26 @@ public class ReceivedMessagesHandler implements Runnable {
         System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
 
         PeerClient.getStorage().updateStoredChunksCounter(this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.senderId);
-
         Pair<String, Integer> pair = new Pair<>(this.messageFactory.fileId, this.messageFactory.chunkNo);
         System.out.println(PeerClient.getStorage().getStoredChunksCounter().get(pair));
     }
 
     private void manageDeletion() {
         System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId);
-
         PeerClient.getStorage().deleteFileChunks(this.messageFactory.fileId);
     }
 
-    private void manageGetChunk() throws IOException {
+    private void manageGetChunk() {
         System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
-
         PeerClient.getMDR().sendChunk(this.messageFactory.version, this.messageFactory.fileId, this.messageFactory.chunkNo);
     }
 
     private void manageChunk() {
         System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
         PeerClient.getStorage().addRecoveredChunk(this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.data);
+    }
+
+    private void manageRemoved() {
+        System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
     }
 }

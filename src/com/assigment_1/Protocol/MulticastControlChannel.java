@@ -30,7 +30,7 @@ public class MulticastControlChannel extends MulticastChannel {
 
         String fileID = this.generateId(file.getName(), file.lastModified(), file.getParent());
 
-        PeerClient.getStorage().deleteChunkFromBackUp(fileID);
+        PeerClient.getStorage().deleteFileFromBackUpChunks(fileID);
 
         byte[] message = MessageFactory.createMessage(version, "DELETE", senderId, fileID);
 

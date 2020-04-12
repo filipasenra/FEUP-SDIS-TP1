@@ -77,7 +77,7 @@ public class ReceivedMessagesHandler implements Runnable {
     private void manageDeletion() {
         System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId);
 
-        PeerClient.getStorage().deleteFileChunks(this.messageFactory.fileId);
+        PeerClient.getStorage().deleteFileFromStoredChunks(this.messageFactory.fileId);
     }
 
 

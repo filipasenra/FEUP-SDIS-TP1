@@ -1,6 +1,5 @@
 package com.assigment_1;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class BackUpChunk extends Chunk {
@@ -20,7 +19,7 @@ public class BackUpChunk extends Chunk {
     }
 
     @Override
-    public byte[] getData() throws IOException {
+    public byte[] getData() {
         return this.data;
     }
 

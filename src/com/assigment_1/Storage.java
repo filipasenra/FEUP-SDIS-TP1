@@ -127,7 +127,7 @@ public class Storage implements Serializable {
             this.backedUpChunk.get(new Pair<>(fileId, chunkNo)).peersBackingUpChunk.add(senderId);
     }
 
-    public void deleteChunkFromBackUp(String fileId) {
+    public void deleteFileFromBackUpChunks(String fileId) {
 
         for (HashMap.Entry<Pair<String, Integer>, BackUpChunk> entry : this.backedUpChunk.entrySet()) {
             Pair<String, Integer> key = entry.getKey();
@@ -137,7 +137,7 @@ public class Storage implements Serializable {
         }
     }
 
-    public void deleteFileChunks(String fileId) {
+    public void deleteFileFromStoredChunks(String fileId) {
 
         System.out.println("ESPAÇO OCUPADO ANTES: " + occupiedSpace);
         ArrayList<Pair<String, Integer>> keys = new ArrayList<>(storedChunks.keySet());
@@ -156,7 +156,7 @@ public class Storage implements Serializable {
 
                 if (chunkToEliminate.deleteData()) {
                     storedChunks.remove(key);
-                    this.occupiedSpace = this.occupiedSpace - dataSize;
+                    this.occupiedSpace -= dataSize;
                 }
             }
         }

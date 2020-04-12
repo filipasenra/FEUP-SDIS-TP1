@@ -26,7 +26,7 @@ public class PutChunkThread implements Runnable {
     public void run() {
 
         Pair<String, Integer> pair = new Pair <> (this.fileId, this.chunkNo);
-        int numStoredTimes = PeerClient.getStorage().getStoredChunksCounter().get(pair).size();
+        int numStoredTimes = PeerClient.getStorage().getBackUpChunk(this.fileId, this.chunkNo).getNumStoredTimes();
 
         System.out.println(numStoredTimes + " < " + replicationDeg + " -> para o chunk " + chunkNo + " com delay " + this.delay + " na tentativa " + this.counter);
 

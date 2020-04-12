@@ -16,7 +16,6 @@ public class Storage implements Serializable {
     private int overallSpace;
     private int occupiedSpace;
     private final HashMap<Pair<String, Integer>, Chunk> storedChunks = new HashMap<>();
-    private final ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> storedChunksCounter = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Pair<String, Integer>, BackUpChunk> backedUpChunk = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Pair<String, Integer>, byte[]> recoveredChunks = new ConcurrentHashMap<>();
 
@@ -63,16 +62,12 @@ public class Storage implements Serializable {
 
     public void decrementCountOfChunk(String fileId, int chunkNo, String senderId) {
 
-        this.storedChunksCounter.get(new Pair<>(fileId, chunkNo)).remove(senderId);
+        this.backedUpChunk.get(new Pair<>(fileId, chunkNo)).peersBackingUpChunk.remove(senderId);
 
     }
 
     public ConcurrentHashMap<Pair<String, Integer>, byte[]> getRecoveredChunks() {
         return recoveredChunks;
-    }
-
-    public ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> getStoredChunksCounter() {
-        return storedChunksCounter;
     }
 
     public HashMap<Pair<String, Integer>, Chunk> getStoredChunks(){
@@ -127,28 +122,12 @@ public class Storage implements Serializable {
     }
 
     public void updateStoredChunksCounter(String fileId, int chunkNo, String senderId) {
-        Pair<String, Integer> pair = new Pair<>(fileId, chunkNo);
-        ArrayList<String> aux = new ArrayList<>();
-        aux.add(senderId);
 
-        if (!this.storedChunksCounter.containsKey(pair)) {
-            this.storedChunksCounter.put(pair, aux);
-        } else {
-            ArrayList<String> curr = this.storedChunksCounter.get(pair);
-
-            if (!curr.contains(senderId))
-                curr.add(senderId);
-        }
+        if (!this.backedUpChunk.get(new Pair<>(fileId, chunkNo)).peersBackingUpChunk.contains(senderId))
+            this.backedUpChunk.get(new Pair<>(fileId, chunkNo)).peersBackingUpChunk.add(senderId);
     }
 
     public void deleteChunkFromBackUp(String fileId) {
-
-        for (HashMap.Entry<Pair<String, Integer>, ArrayList<String>> entry : storedChunksCounter.entrySet()) {
-            Pair<String, Integer> key = entry.getKey();
-            if (key.getKey().equals(fileId)) {
-                storedChunksCounter.remove(key);
-            }
-        }
 
         for (HashMap.Entry<Pair<String, Integer>, BackUpChunk> entry : this.backedUpChunk.entrySet()) {
             Pair<String, Integer> key = entry.getKey();
@@ -189,11 +168,6 @@ public class Storage implements Serializable {
 
         Pair <String, Integer> pair = new Pair <> (fileId, chunkNo);
 
-        if (!this.storedChunksCounter.containsKey(pair)) {
-            ArrayList<String> aux = new ArrayList<>();
-            PeerClient.getStorage().getStoredChunksCounter().put(pair, aux);
-        }
-
         if(!this.backedUpChunk.containsKey(pair)) {
             backedUpChunk.put(pair, chunk);
         }
@@ -208,5 +182,10 @@ public class Storage implements Serializable {
         }
 
         return this.backedUpChunk.get(pair);
+    }
+
+
+    public ConcurrentHashMap<Pair<String, Integer>, BackUpChunk> getBackedUpChunk() {
+        return backedUpChunk;
     }
 }

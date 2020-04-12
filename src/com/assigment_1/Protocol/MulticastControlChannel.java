@@ -1,5 +1,6 @@
 package com.assigment_1.Protocol;
 
+import com.assigment_1.BackUpChunk;
 import com.assigment_1.PeerClient;
 import javafx.util.Pair;
 
@@ -39,24 +40,26 @@ public class MulticastControlChannel extends MulticastChannel {
     public void restoreFile(double version, String senderId, String filepath) {
         File file = new File(filepath);
         String fileID = this.generateId(file.getName(), file.lastModified(), file.getParent());
-        ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> storedChunksCounter = PeerClient.getStorage().getStoredChunksCounter();
+        ConcurrentHashMap<Pair<String, Integer>, BackUpChunk> getBackedUpChunk = PeerClient.getStorage().getBackedUpChunk();
 
         //CHECK IF ALL THE CHUNKS OF THE FILE WERE PREVIOUSLY STORED DURING BACKUP
         //IF NOT IT'S IMPOSSIBLE TO RECOVER THE FILE AND THE RESTORE ENDS HERE
-        ArrayList<ArrayList<String>> values = new ArrayList<>(storedChunksCounter.values());
-        if (values.size() == 0) {
+
+        if (getBackedUpChunk.size() == 0) {
             System.out.println("Impossible to restore file because some or all chunks are not backed up!\n");
             return;
         }
-        for (ArrayList<String> value : values) {
-            if(value.size() == 0) {
+
+        ArrayList<BackUpChunk> values = new ArrayList<>(getBackedUpChunk.values());
+        for (BackUpChunk value : values) {
+            if(value.peersBackingUpChunk.size() == 0) {
                 System.out.println("Impossible to restore file because some or all chunks are not backed up!\n");
                 return;
             }
         }
 
         //IF ALL THE CHUNKS OF THE FILE WERE SAVED, PEER SENDS REQUESTS TO RECOVER THEM
-        ArrayList<Pair<String, Integer>> keys = new ArrayList<>(storedChunksCounter.keySet());
+        ArrayList<Pair<String, Integer>> keys = new ArrayList<>(getBackedUpChunk.keySet());
         int numChunks = 0;
         for (Pair<String, Integer> pair : keys) {
             if (pair.getKey().equals(fileID)) {

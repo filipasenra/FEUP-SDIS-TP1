@@ -1,5 +1,6 @@
 package com.assigment_1.Protocol;
 
+import com.assigment_1.BackUpChunk;
 import com.assigment_1.PeerClient;
 import javafx.util.Pair;
 
@@ -41,6 +42,7 @@ public class MulticastBackupChannel extends MulticastChannel {
                     PeerClient.getStorage().getStoredChunksCounter().put(pair, aux);
                 }
 
+                PeerClient.getStorage().addBackUpChunk(fileID, chunkNr, new BackUpChunk(version, senderId, fileID, chunkNr, replicationDeg, data));
                 PeerClient.getExec().execute(new PutChunkThread(replicationDeg, message, fileID, chunkNr));
 
                 chunkNr++;

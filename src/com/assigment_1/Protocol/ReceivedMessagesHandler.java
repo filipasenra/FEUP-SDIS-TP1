@@ -1,5 +1,6 @@
 package com.assigment_1.Protocol;
 
+import com.assigment_1.BackUpChunk;
 import com.assigment_1.Chunk;
 import com.assigment_1.PeerClient;
 import javafx.util.Pair;
@@ -8,6 +9,7 @@ import javafx.util.Pair;
 public class ReceivedMessagesHandler implements Runnable {
     MessageFactory messageFactory;
     byte[] message;
+    private Chunk chunk;
 
     public ReceivedMessagesHandler(byte[] message) {
         this.message = message;
@@ -80,7 +82,10 @@ public class ReceivedMessagesHandler implements Runnable {
     private void manageRemove() {
         System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
 
-        //TODO: rest of it
+        PeerClient.getStorage().decrementCountOfChunk(this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.senderId);
+        BackUpChunk chunk = PeerClient.getStorage().getBackUpChunk(this.messageFactory.fileId, this.messageFactory.chunkNo);
+        byte[] message = MessageFactory.createMessage(chunk.version, "PUTCHUNK", chunk.senderId, chunk.fileId, chunk.replicationDeg, chunk.chunkNo, chunk.data);
+        PeerClient.getExec().execute(new PutChunkThread(chunk.replicationDeg, message, chunk.fileId, chunk.chunkNo));
     }
 
     private void manageGetChunk() {

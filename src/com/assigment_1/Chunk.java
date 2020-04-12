@@ -6,11 +6,11 @@ import java.io.IOException;
 
 public class Chunk {
 
-    double version;
-    String senderId;
-    String fileId;
-    int chunkNo;
-    int replicationDeg;
+    public double version;
+    public String senderId;
+    public String fileId;
+    public int chunkNo;
+    public int replicationDeg;
 
     public Chunk(double version, String senderId, String fileId, int chunkNo, int replicationDeg) {
         this.version = version;

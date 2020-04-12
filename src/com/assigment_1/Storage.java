@@ -17,6 +17,7 @@ public class Storage implements Serializable {
     private int occupiedSpace;
     private HashMap<Pair<String, Integer>, Chunk> storedChunks = new HashMap<>();
     private ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> storedChunksCounter = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Pair<String, Integer>, BackUpChunk> backedUpChunk = new ConcurrentHashMap<>();
     private ConcurrentHashMap<Pair<String, Integer>, byte[]> recoveredChunks = new ConcurrentHashMap<>();
 
     public Storage() {
@@ -51,6 +52,12 @@ public class Storage implements Serializable {
         }
 
         System.out.println("ESPAÇO OCUPADO DEPOIS DO RECLAIM: " + this.occupiedSpace);
+
+    }
+
+    public void decrementCountOfChunk(String fileId, int chunkNo, String senderId) {
+
+        this.storedChunksCounter.get(new Pair<>(fileId, chunkNo)).remove(senderId);
 
     }
 
@@ -162,5 +169,24 @@ public class Storage implements Serializable {
         }
 
         System.out.println("ESPAÇO OCUPADO DEPOIS: " + occupiedSpace);
+    }
+
+    public void addBackUpChunk(String fileId, int chunkNo, BackUpChunk chunk) {
+
+        Pair<String, Integer> pair = new Pair<>(fileId, chunkNo);
+        if(!this.backedUpChunk.containsKey(pair)) {
+            backedUpChunk.put(pair, chunk);
+        }
+
+    }
+
+    public BackUpChunk getBackUpChunk(String fileId, int chunkNo) {
+
+        Pair<String, Integer> pair = new Pair<>(fileId, chunkNo);
+        if(!this.backedUpChunk.containsKey(pair)){
+            return null;
+        }
+
+        return this.backedUpChunk.get(pair);
     }
 }

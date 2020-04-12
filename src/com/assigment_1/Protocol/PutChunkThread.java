@@ -13,6 +13,7 @@ public class PutChunkThread implements Runnable {
     int chunkNo;
 
     public PutChunkThread(int replicationDeg, byte[] message, String fileId, int chunkNo) {
+
         this.replicationDeg = replicationDeg;
         this.message = message;
         this.counter = 1;
@@ -23,8 +24,10 @@ public class PutChunkThread implements Runnable {
 
     @Override
     public void run() {
+
         Pair<String, Integer> pair = new Pair <> (this.fileId, this.chunkNo);
         int numStoredTimes = PeerClient.getStorage().getStoredChunksCounter().get(pair).size();
+
         System.out.println(numStoredTimes + " < " + replicationDeg + " -> para o chunk " + chunkNo + " com delay " + this.delay + " na tentativa " + this.counter);
 
         if (numStoredTimes < replicationDeg) {

@@ -15,10 +15,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Storage implements Serializable {
     private int overallSpace;
     private int occupiedSpace;
-    private HashMap<Pair<String, Integer>, Chunk> storedChunks = new HashMap<>();
-    private ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> storedChunksCounter = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<Pair<String, Integer>, BackUpChunk> backedUpChunk = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<Pair<String, Integer>, byte[]> recoveredChunks = new ConcurrentHashMap<>();
+    private final HashMap<Pair<String, Integer>, Chunk> storedChunks = new HashMap<>();
+    private final ConcurrentHashMap<Pair<String, Integer>, ArrayList<String>> storedChunksCounter = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Pair<String, Integer>, BackUpChunk> backedUpChunk = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Pair<String, Integer>, byte[]> recoveredChunks = new ConcurrentHashMap<>();
 
     public Storage() {
         this.overallSpace = -1;
@@ -171,9 +171,15 @@ public class Storage implements Serializable {
         System.out.println("ESPAÇO OCUPADO DEPOIS: " + occupiedSpace);
     }
 
-    public void addBackUpChunk(String fileId, int chunkNo, BackUpChunk chunk) {
+    public void addChunkToBackUp(String fileId, int chunkNo, BackUpChunk chunk) {
 
-        Pair<String, Integer> pair = new Pair<>(fileId, chunkNo);
+        Pair <String, Integer> pair = new Pair <> (fileId, chunkNo);
+
+        if (!this.storedChunksCounter.containsKey(pair)) {
+            ArrayList<String> aux = new ArrayList<>();
+            PeerClient.getStorage().getStoredChunksCounter().put(pair, aux);
+        }
+
         if(!this.backedUpChunk.containsKey(pair)) {
             backedUpChunk.put(pair, chunk);
         }

@@ -42,10 +42,21 @@ public class MulticastBackupChannel extends MulticastChannel {
                     PeerClient.getStorage().getStoredChunksCounter().put(pair, aux);
                 }
 
-                PeerClient.getStorage().addBackUpChunk(fileID, chunkNr, new BackUpChunk(version, senderId, fileID, chunkNr, replicationDeg, data));
+                PeerClient.getStorage().addChunkToBackUp(fileID, chunkNr, new BackUpChunk(version, senderId, fileID, chunkNr, replicationDeg, data));
                 PeerClient.getExec().execute(new PutChunkThread(replicationDeg, message, fileID, chunkNr));
 
                 chunkNr++;
+            }
+
+
+            //needs empty chunk
+            if((file.length() % sizeOfChunks) == 0){
+                System.out.println("SENDING: " + chunkNr);
+                byte[] emptyData = {};
+                byte[] message = MessageFactory.createMessage(version, "PUTCHUNK", senderId, fileID, chunkNr, replicationDeg, emptyData);
+
+                PeerClient.getStorage().addChunkToBackUp(fileID, chunkNr, new BackUpChunk(version, senderId, fileID, chunkNr, replicationDeg, emptyData));
+                PeerClient.getExec().execute(new PutChunkThread(replicationDeg, message, fileID, chunkNr));
             }
 
 

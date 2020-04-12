@@ -69,7 +69,6 @@ public class ReceivedMessagesHandler implements Runnable {
         PeerClient.getStorage().updateStoredChunksCounter(this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.senderId);
 
         Pair<String, Integer> pair = new Pair<>(this.messageFactory.fileId, this.messageFactory.chunkNo);
-        System.out.println(PeerClient.getStorage().getStoredChunksCounter().get(pair));
     }
 
     private void manageDeletion() {

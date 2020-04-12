@@ -29,11 +29,12 @@ public class MulticastControlChannel extends MulticastChannel {
 
         String fileID = this.generateId(file.getName(), file.lastModified(), file.getParent());
 
-        PeerClient.getStorage().deleteStoredChunksCounter(fileID);
+        PeerClient.getStorage().deleteChunkFromBackUp(fileID);
 
         byte[] message = MessageFactory.createMessage(version, "DELETE", senderId, fileID);
 
-        PeerClient.getExec().schedule(new Thread(() -> this.sendMessage(message)), 1, TimeUnit.SECONDS);
+        Random random = new Random();
+        PeerClient.getExec().schedule(new Thread(() -> this.sendMessage(message)), random.nextInt(401), TimeUnit.SECONDS);
     }
 
     public void restoreFile(double version, String senderId, String filepath) {

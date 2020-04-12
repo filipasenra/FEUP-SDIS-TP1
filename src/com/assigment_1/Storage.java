@@ -30,7 +30,13 @@ public class Storage implements Serializable {
 
         System.out.println("ESPAÇO OCUPADO ANTES DO RECLAIM: " + this.occupiedSpace);
 
-        while(this.overallSpace < occupiedSpace) {
+        while(this.overallSpace < occupiedSpace ) {
+
+            if(this.storedChunks.size() == 0)
+            {
+                System.err.println("Eliminated all chunks and i'm still over capacity!\n");
+            }
+
             Map.Entry<Pair<String, Integer>, Chunk> entry = this.storedChunks.entrySet().iterator().next();
             Chunk chunkToEliminate = entry.getValue();
 

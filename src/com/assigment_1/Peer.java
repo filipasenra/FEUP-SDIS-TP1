@@ -30,6 +30,7 @@ public class Peer implements InterfacePeer {
         System.out.println("\nBACKUP SERVICE");
         System.out.println(" > File path: " + file_path);
         System.out.println(" > Replication Degree: " + replication_degree);
+        System.out.println("");
 
         exec.execute(new Thread(() -> MDB.backupFile(this.version, this.id, file_path, replication_degree)));
     }
@@ -38,6 +39,7 @@ public class Peer implements InterfacePeer {
     public void deletion(String file_path) {
         System.out.println("\nDELETION SERVICE");
         System.out.println(" > File path: " + file_path);
+        System.out.println("");
 
         exec.execute(new Thread(() -> MC.deleteFile(this.version, this.id, file_path)));
     }
@@ -46,6 +48,7 @@ public class Peer implements InterfacePeer {
     public void restore(String file_path) {
         System.out.println("\nRESTORE SERVICE");
         System.out.println(" > File path: " + file_path);
+        System.out.println("");
 
         exec.execute(new Thread(() -> MC.restoreFile(this.version, this.id, file_path)));
     }
@@ -54,6 +57,7 @@ public class Peer implements InterfacePeer {
     public void reclaim(String disk_space) {
         System.out.println("\nRECLAIM SERVICE");
         System.out.println(" > Disk space: " + disk_space);
+        System.out.println("");
 
         PeerClient.getStorage().setOverallSpace(Integer.parseInt(disk_space));
     }

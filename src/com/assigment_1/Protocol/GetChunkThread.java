@@ -37,6 +37,8 @@ public class GetChunkThread implements Runnable {
                 e.printStackTrace();
             }
 
+
+            System.out.println(" > SENDING MESSAGE: " + version + " CHUNK " + senderId + " " + fileId + " " + chunkNo);
             byte[] message = MessageFactory.createMessage(version, "CHUNK", senderId, fileId, chunkNo, data);
             PeerClient.getExec().execute(new Thread(() -> PeerClient.getMDR().sendMessage(message)));
         }

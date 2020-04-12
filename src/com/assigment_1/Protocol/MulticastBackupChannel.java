@@ -33,6 +33,7 @@ public class MulticastBackupChannel extends MulticastChannel {
 
             while ((bytesAmount = bis.read(buffer)) > 0) {
 
+                System.out.println(" > SENDING MESSAGE: " + version + " PUTCHUNK " + senderId + " " + fileID + " " + chunkNr + " " + replicationDeg);
                 byte[] data = Arrays.copyOf(buffer, bytesAmount);
                 byte[] message = MessageFactory.createMessage(version, "PUTCHUNK", senderId, fileID, chunkNr, replicationDeg, data);
 
@@ -49,7 +50,7 @@ public class MulticastBackupChannel extends MulticastChannel {
 
             //needs empty chunk
             if((file.length() % sizeOfChunks) == 0){
-                System.out.println("SENDING: " + chunkNr);
+                System.out.println(" > SENDING MESSAGE: " + version + " PUTCHUNK " + senderId + " " + fileID + " " + chunkNr + " " + replicationDeg);
                 byte[] emptyData = {};
                 byte[] message = MessageFactory.createMessage(version, "PUTCHUNK", senderId, fileID, chunkNr, replicationDeg, emptyData);
 

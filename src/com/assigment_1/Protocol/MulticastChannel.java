@@ -38,8 +38,6 @@ public class MulticastChannel implements Runnable {
             DatagramPacket msgPacket = new DatagramPacket(message, message.length, this.address, this.port);
             senderSocket.send(msgPacket);
 
-            System.out.println("SENDING MESSAGE");
-
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -66,7 +64,6 @@ public class MulticastChannel implements Runnable {
 
                 byte[] bufferCopy = Arrays.copyOf(buffer, msgPacket.getLength());
 
-                
                 PeerClient.getExec().execute(new ReceivedMessagesHandler(bufferCopy));
             }
         } catch (IOException ex) {

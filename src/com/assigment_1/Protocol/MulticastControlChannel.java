@@ -17,6 +17,9 @@ public class MulticastControlChannel extends MulticastChannel {
     }
 
     public void confirmStore(double version, String senderId, String fileID, int chunkNo) {
+
+        System.out.println(" > SENDING MESSAGE: " + version + " STORED " + " " + senderId + " " + fileID + " " + chunkNo);
+
         byte[] message = MessageFactory.createMessage(version, "STORED", senderId, fileID, chunkNo);
 
         Random random = new Random();
@@ -32,8 +35,9 @@ public class MulticastControlChannel extends MulticastChannel {
 
         PeerClient.getStorage().deleteFileFromBackUpChunks(fileID);
 
-        byte[] message = MessageFactory.createMessage(version, "DELETE", senderId, fileID);
+        System.out.println(" > SENDING MESSAGE: " + version + " DELETE " + " " + senderId + " " + fileID);
 
+        byte[] message = MessageFactory.createMessage(version, "DELETE", senderId, fileID);
         PeerClient.getExec().execute(new Thread(() -> this.sendMessage(message)));
     }
 
@@ -56,11 +60,14 @@ public class MulticastControlChannel extends MulticastChannel {
         for(Map.Entry<Integer, BackUpChunk> fileInfoEntry : backedUpFiles.get(fileID).backedUpChunk.entrySet() ) {
 
             numChunks++;
+
+            System.out.println(" > SENDING MESSAGE: " + version + " GETCHUNK " + senderId + " " + fileID + " " + fileInfoEntry.getKey());
             byte[] message = MessageFactory.createMessage(version, "GETCHUNK", senderId, fileID, fileInfoEntry.getKey());
             PeerClient.getExec().execute(new Thread(() -> this.sendMessage(message)));
 
         }
 
+        System.out.println(" > RESTORING FILE");
         //RECOVERING THE ALL FILE AFTER REQUESTING THEIR CHUNKS
         PeerClient.getExec().schedule(new RestoreFileThread(fileID, filepath, numChunks), 10, TimeUnit.SECONDS);
     }

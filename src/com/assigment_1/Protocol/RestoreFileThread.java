@@ -47,7 +47,7 @@ public class RestoreFileThread implements Runnable {
             file.delete();
 
         for (int i = 0; i < numChunks; i++) {
-            System.out.println(i);
+
             Pair<String, Integer> pair = new Pair<>(fileId, i);
 
             if (!PeerClient.getStorage().getRecoveredChunks().containsKey(pair)) {
@@ -72,6 +72,6 @@ public class RestoreFileThread implements Runnable {
             }
         }
 
-        System.out.println("File recovered successfully!");
+        System.out.println(" > File recovered successfully!");
     }
 }

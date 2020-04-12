@@ -1,11 +1,14 @@
 package com.assigment_1;
 
+import com.assigment_1.Protocol.MulticastBackupChannel;
+import com.assigment_1.Protocol.MulticastControlChannel;
+import com.assigment_1.Protocol.MulticastDataRecoveryChannel;
+
 import java.rmi.RemoteException;
-import com.assigment_1.Protocol.*;
-import java.rmi.registry.Registry;
-import java.util.concurrent.Executors;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 // make in src:
@@ -40,7 +43,7 @@ public class PeerClient {
     private static boolean parseArgs(String[] args) {
 
         if(args.length != 9){
-            System.err.println("usage: Peer <version> <server id> <access_point> <MC_IP_address> <MC_port> <MDB_IP_address> <MDB_port> <MDR_IP_address> <MDR_port>");
+            System.err.println("Usage: Peer <version> <server id> <access_point> <MC_IP_address> <MC_port> <MDB_IP_address> <MDB_port> <MDR_IP_address> <MDR_port>");
             return false;
         }
 

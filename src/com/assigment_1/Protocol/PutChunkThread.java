@@ -27,9 +27,15 @@ public class PutChunkThread implements Runnable {
 
         int numStoredTimes = PeerClient.getStorage().getBackUpChunk(this.fileId, this.chunkNo).getNumStoredTimes();
 
-        System.out.println(numStoredTimes + " < " + replicationDeg + " -> para o chunk " + chunkNo + " com delay " + this.delay + " na tentativa " + this.counter);
-
         if (numStoredTimes < replicationDeg) {
+
+            System.out.println("\t> File: " + this.fileId + " Chunk No: " + chunkNo);
+            System.out.println("\t\tStored: " + numStoredTimes + " times");
+            System.out.println("\t\tDesired Replication Degree: " + replicationDeg);
+            System.out.println("\t\tAttempt: " + this.counter);
+            System.out.println("\t\tNext Delay: " + this.delay);
+            System.out.println("");
+
             PeerClient.getExec().execute(new Thread(() -> PeerClient.getMDB().sendMessage(message)));
 
            if (this.counter < 5) {

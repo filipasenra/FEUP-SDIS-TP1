@@ -29,36 +29,36 @@ public class Storage implements Serializable {
     public void setOverallSpace(int overallSpace) {
         this.overallSpace = overallSpace * 1000;
 
-        System.out.println("ESPAÇO OCUPADO ANTES DO RECLAIM: " + this.occupiedSpace);
-
         while(this.overallSpace < occupiedSpace ) {
 
             if(this.storedChunks.size() == 0)
             {
-                System.err.println("Eliminated all chunks and i'm still over capacity!\n");
+                System.err.println("Eliminated all chunks and still over capacity!\n");
             }
 
             Map.Entry<Pair<String, Integer>, Chunk> entry = this.storedChunks.entrySet().iterator().next();
             Chunk chunkToEliminate = entry.getValue();
 
-            int dataSize = 0;
             try {
-                dataSize = chunkToEliminate.getData().length;
+
+                int dataSize = chunkToEliminate.getData().length;
+
+                if (chunkToEliminate.deleteData()) {
+                    this.storedChunks.remove(entry.getKey(), entry.getValue());
+                    this.occupiedSpace -= dataSize;
+
+                    System.out.println(" > SENDING MESSAGE: " + chunkToEliminate.version + " REMOVED " + PeerClient.getId() + " " + chunkToEliminate.fileId + " " + chunkToEliminate.chunkNo);
+                    byte[] message = MessageFactory.createMessage(chunkToEliminate.version, "REMOVED", PeerClient.getId(), chunkToEliminate.fileId, chunkToEliminate.chunkNo);
+                    PeerClient.getMC().sendMessage(message);
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            if (chunkToEliminate.deleteData()) {
-                this.storedChunks.remove(entry.getKey(), entry.getValue());
-                this.occupiedSpace -= dataSize;
-
-                byte[] message = MessageFactory.createMessage(chunkToEliminate.version, "REMOVED", PeerClient.getId(), chunkToEliminate.fileId, chunkToEliminate.chunkNo);
-                PeerClient.getMC().sendMessage(message);
-            }
-
         }
 
-        System.out.println("ESPAÇO OCUPADO DEPOIS DO RECLAIM: " + this.occupiedSpace);
+        System.out.println(" > RECLAIM: New Storage Size is " + overallSpace);
 
     }
 
@@ -89,9 +89,8 @@ public class Storage implements Serializable {
 
     public void addChunkToStorage(Chunk chunk, byte[] data) {
 
-        System.out.println("ESPAÇO OCUPADO ANTES BACKUP: " + this.occupiedSpace);
         if ((overallSpace != -1) && ((this.overallSpace - this.occupiedSpace) < data.length)) {
-            System.out.println("Peer doesn't have space for chunk number " + chunk.chunkNo + " of " + chunk.fileId + " from " + chunk.senderId);
+            System.err.println("Peer doesn't have space for chunk number " + chunk.chunkNo + " of " + chunk.fileId + " from " + chunk.senderId);
             return;
         }
 
@@ -122,8 +121,6 @@ public class Storage implements Serializable {
 
         }
 
-        System.out.println("ESPAÇO OCUPADO DEPOIS BACKUP: " + this.occupiedSpace);
-
         //SEND CHUNK STORAGE CONFIRMATION MESSAGE
         PeerClient.getMC().confirmStore(chunk.version, PeerClient.getId(), chunk.fileId, chunk.chunkNo);
     }
@@ -147,9 +144,8 @@ public class Storage implements Serializable {
         this.backedUpFiles.remove(fileId);
     }
 
-    public void deleteFileFromStoredChunks(String fileId) {
+    public boolean deleteFileFromStoredChunks(String fileId) {
 
-        System.out.println("ESPAÇO OCUPADO ANTES: " + occupiedSpace);
         ArrayList<Pair<String, Integer>> keys = new ArrayList<>(storedChunks.keySet());
 
         for (Pair<String, Integer> key : keys) {
@@ -167,11 +163,12 @@ public class Storage implements Serializable {
                 if (chunkToEliminate.deleteData()) {
                     storedChunks.remove(key);
                     this.occupiedSpace -= dataSize;
+                    return true;
                 }
             }
         }
 
-        System.out.println("ESPAÇO OCUPADO DEPOIS: " + occupiedSpace);
+        return false;
     }
 
     public void addChunkToBackUp(String fileId, int chunkNo, BackUpChunk chunk) {

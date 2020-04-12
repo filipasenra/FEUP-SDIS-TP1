@@ -5,6 +5,9 @@ import com.assigment_1.Chunk;
 import com.assigment_1.PeerClient;
 import javafx.util.Pair;
 
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
 
 public class ReceivedMessagesHandler implements Runnable {
     MessageFactory messageFactory;
@@ -84,7 +87,9 @@ public class ReceivedMessagesHandler implements Runnable {
         PeerClient.getStorage().decrementCountOfChunk(this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.senderId);
         BackUpChunk chunk = PeerClient.getStorage().getBackUpChunk(this.messageFactory.fileId, this.messageFactory.chunkNo);
         byte[] message = MessageFactory.createMessage(chunk.version, "PUTCHUNK", chunk.senderId, chunk.fileId, chunk.replicationDeg, chunk.chunkNo, chunk.data);
-        PeerClient.getExec().execute(new PutChunkThread(chunk.replicationDeg, message, chunk.fileId, chunk.chunkNo));
+
+        Random random = new Random();
+        PeerClient.getExec().schedule(new PutChunkThread(chunk.replicationDeg, message, chunk.fileId, chunk.chunkNo), random.nextInt(401), TimeUnit.MILLISECONDS);
     }
 
     private void manageGetChunk() {

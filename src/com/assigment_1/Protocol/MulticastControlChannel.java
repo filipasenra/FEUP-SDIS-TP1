@@ -33,8 +33,7 @@ public class MulticastControlChannel extends MulticastChannel {
 
         byte[] message = MessageFactory.createMessage(version, "DELETE", senderId, fileID);
 
-        Random random = new Random();
-        PeerClient.getExec().schedule(new Thread(() -> this.sendMessage(message)), random.nextInt(401), TimeUnit.SECONDS);
+        PeerClient.getExec().execute(new Thread(() -> this.sendMessage(message)));
     }
 
     public void restoreFile(double version, String senderId, String filepath) {

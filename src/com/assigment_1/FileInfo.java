@@ -1,8 +1,9 @@
 package com.assigment_1;
 
+import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class FileInfo {
+public class FileInfo implements Serializable {
 
     String pathname;
     String id;

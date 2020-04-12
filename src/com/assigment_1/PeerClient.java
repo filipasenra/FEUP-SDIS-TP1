@@ -4,6 +4,7 @@ import com.assigment_1.Protocol.MulticastBackupChannel;
 import com.assigment_1.Protocol.MulticastControlChannel;
 import com.assigment_1.Protocol.MulticastDataRecoveryChannel;
 
+import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -26,6 +27,9 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 
 public class PeerClient {
+
+    private final static String serializeObjectName = "Storage";
+
     private static String id;
     private static MulticastBackupChannel MDB;
     public static MulticastControlChannel MC;
@@ -72,11 +76,17 @@ public class PeerClient {
             e.printStackTrace();
         }
 
+        getStorageFromFile();
+
+        //Saves storage before shutdown
+        Runtime.getRuntime().addShutdownHook(new Thread(PeerClient::saveStorageIntoFile));
+
         System.out.println("Peer " + getId() + " ready");
 
         exec.execute(MDB);
         exec.execute(MC);
         exec.execute(MDR);
+
 
         return true;
     }
@@ -103,5 +113,49 @@ public class PeerClient {
 
     public static ScheduledThreadPoolExecutor getExec() {
         return exec;
+    }
+
+    //saves this peer storage in a file called storage.ser
+    private static void saveStorageIntoFile() {
+
+        try {
+            String filename = PeerClient.getId() + "/" + serializeObjectName + ".ser";
+
+            File file = new File(filename);
+            if (!file.exists()) {
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+            }
+
+            FileOutputStream fileOutputStream = new FileOutputStream(filename);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(storage);
+            objectOutputStream.close();
+            fileOutputStream.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private static void getStorageFromFile() {
+        try {
+            String filename = PeerClient.getId() + "/" + serializeObjectName + ".ser";
+
+            File file = new File(filename);
+            if (!file.exists()) {
+                return;
+            }
+
+            FileInputStream fileInputStream = new FileInputStream(filename);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            storage = (Storage) objectInputStream.readObject();
+            objectInputStream.close();
+            fileInputStream.close();
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

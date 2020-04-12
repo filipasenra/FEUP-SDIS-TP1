@@ -3,9 +3,10 @@ package com.assigment_1;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Chunk {
+public class Chunk implements Serializable {
 
     public double version;
     public String senderId;

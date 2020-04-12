@@ -1,13 +1,10 @@
 package com.assigment_1.Protocol;
 
-import javafx.util.Pair;
-
-import java.util.HashMap;
-import java.io.IOException;
-
 import com.assigment_1.Chunk;
 import com.assigment_1.PeerClient;
+import javafx.util.Pair;
 
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.assigment_1.Protocol.MulticastChannel.sizeOfChunks;
@@ -27,7 +24,7 @@ public class GetChunkThread implements Runnable {
 
     @Override
     public void run() {
-        HashMap<Pair<String, Integer>, Chunk> storedChunks = PeerClient.getStorage().getStoredChunks();
+        ConcurrentHashMap<Pair<String, Integer>, Chunk> storedChunks = PeerClient.getStorage().getStoredChunks();
         Pair<String, Integer> pair = new Pair<>(fileId, chunkNo);
         ConcurrentHashMap<Pair<String, Integer>, byte[]> recoveredChunks = PeerClient.getStorage().getRecoveredChunks();
 

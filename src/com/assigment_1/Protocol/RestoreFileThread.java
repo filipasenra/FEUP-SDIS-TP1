@@ -1,10 +1,11 @@
 package com.assigment_1.Protocol;
 
-import java.io.File;
-import javafx.util.Pair;
-import java.io.IOException;
-import java.io.FileOutputStream;
 import com.assigment_1.PeerClient;
+import javafx.util.Pair;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 
 public class RestoreFileThread implements Runnable {
@@ -42,7 +43,8 @@ public class RestoreFileThread implements Runnable {
 
         File file = new File(recovered);
 
-        if (file.exists()) file.delete();
+        if (file.exists())
+            file.delete();
 
         for (int i = 0; i < numChunks; i++) {
             System.out.println(i);
@@ -57,7 +59,6 @@ public class RestoreFileThread implements Runnable {
 
                 try {
                     if (!file.exists()) {
-                        file.getParentFile().mkdirs();
                         file.createNewFile();
                     }
 

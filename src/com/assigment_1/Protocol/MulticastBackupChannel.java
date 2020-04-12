@@ -1,6 +1,7 @@
 package com.assigment_1.Protocol;
 
 import com.assigment_1.BackUpChunk;
+import com.assigment_1.FileInfo;
 import com.assigment_1.PeerClient;
 
 import java.io.BufferedInputStream;
@@ -28,6 +29,8 @@ public class MulticastBackupChannel extends MulticastChannel {
             byte[] buffer = new byte[sizeOfChunks];
             String fileID = this.generateId(file.getName(), file.lastModified(), file.getParent());
 
+            PeerClient.getStorage().addBackedUpFiles(fileID, new FileInfo(filepath, fileID, replicationDeg));
+
             while ((bytesAmount = bis.read(buffer)) > 0) {
 
                 byte[] data = Arrays.copyOf(buffer, bytesAmount);
@@ -35,6 +38,7 @@ public class MulticastBackupChannel extends MulticastChannel {
 
                 BackUpChunk chunk = PeerClient.getStorage().getBackUpChunk(fileID, chunkNr);
                 if(chunk == null || !chunk.isActive()) {
+
                     PeerClient.getStorage().addChunkToBackUp(fileID, chunkNr, new BackUpChunk(version, senderId, fileID, chunkNr, replicationDeg, data));
                     PeerClient.getExec().execute(new PutChunkThread(replicationDeg, message, fileID, chunkNr));
 

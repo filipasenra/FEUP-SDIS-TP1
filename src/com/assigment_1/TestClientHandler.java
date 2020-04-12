@@ -1,5 +1,6 @@
 package com.assigment_1;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.NotBoundException;
@@ -80,6 +81,23 @@ public class TestClientHandler {
         try {
             peer.reclaim(arguments[0]);
         } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
+    public boolean doState(String[] arguments) {
+
+        if(arguments.length != 0) {
+            System.err.println("Wrong no. of arguments");
+            System.err.println("Usage: <rmi_peer_ap> STATE");
+            return false;
+        }
+
+        try {
+            System.out.println(peer.state());
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

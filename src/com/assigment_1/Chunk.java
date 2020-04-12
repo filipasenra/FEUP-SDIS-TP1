@@ -36,4 +36,8 @@ public class Chunk {
 
         return data;
     }
+
+    public String getId() {
+        return this.fileId + "_" + this.chunkNo;
+    }
 }

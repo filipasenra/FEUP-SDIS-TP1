@@ -1,5 +1,6 @@
 package com.assigment_1;
 
+import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
@@ -12,4 +13,6 @@ public interface InterfacePeer extends Remote {
     void restore(String file_path) throws RemoteException;
 
     void reclaim(String file_path) throws RemoteException;
+
+    String state() throws IOException;
 }

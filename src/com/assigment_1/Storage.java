@@ -8,15 +8,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Storage implements Serializable {
     private int overallSpace;
     private int occupiedSpace;
-    private final HashMap<Pair<String, Integer>, Chunk> storedChunks = new HashMap<>();
-    private final ConcurrentHashMap<Pair<String, Integer>, BackUpChunk> backedUpChunk = new ConcurrentHashMap<>();
+
+    private final ConcurrentHashMap<Pair<String, Integer>, Chunk> storedChunks = new ConcurrentHashMap<>();
+
+    private final ConcurrentHashMap<String, FileInfo> backedUpFiles = new ConcurrentHashMap<>();
+
     private final ConcurrentHashMap<Pair<String, Integer>, byte[]> recoveredChunks = new ConcurrentHashMap<>();
 
     public Storage() {
@@ -62,8 +64,10 @@ public class Storage implements Serializable {
 
     public void decrementCountOfChunk(String fileId, int chunkNo, String senderId) {
 
-        if(this.backedUpChunk.contains(new Pair<>(fileId, chunkNo))) {
-            this.backedUpChunk.get(new Pair<>(fileId, chunkNo)).peersBackingUpChunk.remove(senderId);
+        if(this.backedUpFiles.containsKey(fileId)){
+            if(this.backedUpFiles.get(fileId).backedUpChunk.containsKey(chunkNo)){
+                this.backedUpFiles.get(fileId).backedUpChunk.get(chunkNo).peersBackingUpChunk.remove(senderId);
+            }
         }
 
     }
@@ -72,7 +76,7 @@ public class Storage implements Serializable {
         return recoveredChunks;
     }
 
-    public HashMap<Pair<String, Integer>, Chunk> getStoredChunks(){
+    public ConcurrentHashMap<Pair<String, Integer>, Chunk> getStoredChunks(){
         return storedChunks;
     }
 
@@ -125,18 +129,17 @@ public class Storage implements Serializable {
 
     public void updateStoredChunksCounter(String fileId, int chunkNo, String senderId) {
 
-        if (!this.backedUpChunk.get(new Pair<>(fileId, chunkNo)).peersBackingUpChunk.contains(senderId))
-            this.backedUpChunk.get(new Pair<>(fileId, chunkNo)).peersBackingUpChunk.add(senderId);
+        if(this.backedUpFiles.containsKey(fileId)){
+            if(this.backedUpFiles.get(fileId).backedUpChunk.containsKey(chunkNo)){
+                if(!this.backedUpFiles.get(fileId).backedUpChunk.get(chunkNo).peersBackingUpChunk.contains(senderId))
+                    this.backedUpFiles.get(fileId).backedUpChunk.get(chunkNo).peersBackingUpChunk.add(senderId);
+            }
+        }
     }
 
     public void deleteFileFromBackUpChunks(String fileId) {
 
-        for (HashMap.Entry<Pair<String, Integer>, BackUpChunk> entry : this.backedUpChunk.entrySet()) {
-            Pair<String, Integer> key = entry.getKey();
-            if (key.getKey().equals(fileId)) {
-                this.backedUpChunk.remove(key);
-            }
-        }
+        this.backedUpFiles.remove(fileId);
     }
 
     public void deleteFileFromStoredChunks(String fileId) {
@@ -168,26 +171,32 @@ public class Storage implements Serializable {
 
     public void addChunkToBackUp(String fileId, int chunkNo, BackUpChunk chunk) {
 
-        Pair <String, Integer> pair = new Pair <> (fileId, chunkNo);
-
-        if(!this.backedUpChunk.containsKey(pair)) {
-            backedUpChunk.put(pair, chunk);
+        if (!this.backedUpFiles.containsKey(fileId)) {
+           return;
         }
 
+        if (!this.backedUpFiles.get(fileId).backedUpChunk.containsKey(chunkNo)) {
+            this.backedUpFiles.get(fileId).backedUpChunk.put(chunkNo, chunk);
+        }
+
+    }
+
+    public void addBackedUpFiles(String fileId, FileInfo fileInfo){
+        this.backedUpFiles.put(fileId, fileInfo);
     }
 
     public BackUpChunk getBackUpChunk(String fileId, int chunkNo) {
 
-        Pair<String, Integer> pair = new Pair<>(fileId, chunkNo);
-        if(!this.backedUpChunk.containsKey(pair)){
+        if(!this.backedUpFiles.containsKey(fileId))
             return null;
-        }
 
-        return this.backedUpChunk.get(pair);
+        if(!this.backedUpFiles.get(fileId).backedUpChunk.containsKey(chunkNo))
+            return null;
+
+        return this.backedUpFiles.get(fileId).backedUpChunk.get(chunkNo);
     }
 
-
-    public ConcurrentHashMap<Pair<String, Integer>, BackUpChunk> getBackedUpChunk() {
-        return backedUpChunk;
+    public ConcurrentHashMap<String, FileInfo> getBackedUpFiles() {
+        return backedUpFiles;
     }
 }

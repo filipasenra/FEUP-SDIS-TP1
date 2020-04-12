@@ -41,14 +41,12 @@ public class TestClient {
             case "RECLAIM":
                 return testClientHandler.doReclaim(arguments);
             case "STATE":
-                //TODO
-                break;
+                return testClientHandler.doState(arguments);
             default:
                 System.err.println("NOT A VALID PROTOCOL");
                 return false;
         }
 
-        return true;
     }
 
 }

@@ -62,7 +62,9 @@ public class Storage implements Serializable {
 
     public void decrementCountOfChunk(String fileId, int chunkNo, String senderId) {
 
-        this.backedUpChunk.get(new Pair<>(fileId, chunkNo)).peersBackingUpChunk.remove(senderId);
+        if(this.backedUpChunk.contains(new Pair<>(fileId, chunkNo))) {
+            this.backedUpChunk.get(new Pair<>(fileId, chunkNo)).peersBackingUpChunk.remove(senderId);
+        }
 
     }
 

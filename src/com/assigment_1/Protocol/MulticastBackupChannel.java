@@ -33,9 +33,12 @@ public class MulticastBackupChannel extends MulticastChannel {
                 byte[] data = Arrays.copyOf(buffer, bytesAmount);
                 byte[] message = MessageFactory.createMessage(version, "PUTCHUNK", senderId, fileID, chunkNr, replicationDeg, data);
 
-                PeerClient.getStorage().addChunkToBackUp(fileID, chunkNr, new BackUpChunk(version, senderId, fileID, chunkNr, replicationDeg, data));
-                PeerClient.getExec().execute(new PutChunkThread(replicationDeg, message, fileID, chunkNr));
+                BackUpChunk chunk = PeerClient.getStorage().getBackUpChunk(fileID, chunkNr);
+                if(chunk == null || !chunk.isActive()) {
+                    PeerClient.getStorage().addChunkToBackUp(fileID, chunkNr, new BackUpChunk(version, senderId, fileID, chunkNr, replicationDeg, data));
+                    PeerClient.getExec().execute(new PutChunkThread(replicationDeg, message, fileID, chunkNr));
 
+                }
                 chunkNr++;
             }
 
@@ -46,8 +49,12 @@ public class MulticastBackupChannel extends MulticastChannel {
                 byte[] emptyData = {};
                 byte[] message = MessageFactory.createMessage(version, "PUTCHUNK", senderId, fileID, chunkNr, replicationDeg, emptyData);
 
-                PeerClient.getStorage().addChunkToBackUp(fileID, chunkNr, new BackUpChunk(version, senderId, fileID, chunkNr, replicationDeg, emptyData));
-                PeerClient.getExec().execute(new PutChunkThread(replicationDeg, message, fileID, chunkNr));
+                BackUpChunk chunk = PeerClient.getStorage().getBackUpChunk(fileID, chunkNr);
+                if(chunk == null || !chunk.isActive()) {
+                    PeerClient.getStorage().addChunkToBackUp(fileID, chunkNr, new BackUpChunk(version, senderId, fileID, chunkNr, replicationDeg, emptyData));
+                    PeerClient.getStorage().getBackUpChunk(fileID, chunkNr).makeActive();
+                    PeerClient.getExec().execute(new PutChunkThread(replicationDeg, message, fileID, chunkNr));
+                }
             }
 
 

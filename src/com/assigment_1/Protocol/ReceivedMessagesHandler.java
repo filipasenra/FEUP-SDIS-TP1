@@ -3,7 +3,6 @@ package com.assigment_1.Protocol;
 import com.assigment_1.BackUpChunk;
 import com.assigment_1.Chunk;
 import com.assigment_1.PeerClient;
-import javafx.util.Pair;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -70,8 +69,6 @@ public class ReceivedMessagesHandler implements Runnable {
         System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
 
         PeerClient.getStorage().updateStoredChunksCounter(this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.senderId);
-
-        Pair<String, Integer> pair = new Pair<>(this.messageFactory.fileId, this.messageFactory.chunkNo);
     }
 
     private void manageDeletion() {
@@ -84,12 +81,16 @@ public class ReceivedMessagesHandler implements Runnable {
     private void manageRemove() {
         System.out.println("RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
 
-        PeerClient.getStorage().decrementCountOfChunk(this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.senderId);
         BackUpChunk chunk = PeerClient.getStorage().getBackUpChunk(this.messageFactory.fileId, this.messageFactory.chunkNo);
-        byte[] message = MessageFactory.createMessage(chunk.version, "PUTCHUNK", chunk.senderId, chunk.fileId, chunk.replicationDeg, chunk.chunkNo, chunk.data);
+        //Checks if remove is from one of its files
+        if (chunk != null && !chunk.isActive()) {
 
-        Random random = new Random();
-        PeerClient.getExec().schedule(new PutChunkThread(chunk.replicationDeg, message, chunk.fileId, chunk.chunkNo), random.nextInt(401), TimeUnit.MILLISECONDS);
+            PeerClient.getStorage().decrementCountOfChunk(this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.senderId);
+            byte[] message = MessageFactory.createMessage(chunk.version, "PUTCHUNK", chunk.senderId, chunk.fileId, chunk.replicationDeg, chunk.chunkNo, chunk.data);
+
+            Random random = new Random();
+            PeerClient.getExec().schedule(new PutChunkThread(chunk.replicationDeg, message, chunk.fileId, chunk.chunkNo), random.nextInt(401), TimeUnit.MILLISECONDS);
+        }
     }
 
     private void manageGetChunk() {

@@ -1,7 +1,7 @@
 package com.assigment_1.Protocol;
 
-import javafx.util.Pair;
 import com.assigment_1.PeerClient;
+
 import java.util.concurrent.TimeUnit;
 
 public class PutChunkThread implements Runnable {
@@ -25,7 +25,6 @@ public class PutChunkThread implements Runnable {
     @Override
     public void run() {
 
-        Pair<String, Integer> pair = new Pair <> (this.fileId, this.chunkNo);
         int numStoredTimes = PeerClient.getStorage().getBackUpChunk(this.fileId, this.chunkNo).getNumStoredTimes();
 
         System.out.println(numStoredTimes + " < " + replicationDeg + " -> para o chunk " + chunkNo + " com delay " + this.delay + " na tentativa " + this.counter);
@@ -35,10 +34,15 @@ public class PutChunkThread implements Runnable {
 
            if (this.counter < 5) {
                 PeerClient.getExec().schedule(this, this.delay, TimeUnit.SECONDS);
+           } else {
+               PeerClient.getStorage().getBackUpChunk(this.fileId, this.chunkNo).makeInactive();
            }
 
             this.counter++;
             this.delay = 2 * this.delay;
+
+        } else {
+            PeerClient.getStorage().getBackUpChunk(this.fileId, this.chunkNo).makeInactive();
         }
     }
 }

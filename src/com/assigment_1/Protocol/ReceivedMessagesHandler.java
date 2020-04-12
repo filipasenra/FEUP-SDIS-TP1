@@ -26,6 +26,12 @@ public class ReceivedMessagesHandler implements Runnable {
             return;
         }
 
+        //Ignore messages
+        if (PeerClient.getId().equals(messageFactory.senderId)) {
+            //System.out.println("Ignored Message");
+            return;
+        }
+
         switch (messageFactory.messageType) {
             case "PUTCHUNK":
                 managePutChunk();
@@ -52,12 +58,6 @@ public class ReceivedMessagesHandler implements Runnable {
 
     private void managePutChunk() {
 
-        //Ignore messages
-        if (PeerClient.getId().equals(messageFactory.senderId)) {
-            //System.out.println("Ignored Message");
-            return;
-        }
-
         System.out.println(" > RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo + " " + this.messageFactory.replicationDeg);
 
         Chunk chunk = new Chunk(this.messageFactory.version, this.messageFactory.senderId, this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.replicationDeg);
@@ -66,12 +66,6 @@ public class ReceivedMessagesHandler implements Runnable {
     }
 
     private void manageStored() {
-
-        //Ignore messages
-        if (PeerClient.getId().equals(messageFactory.senderId)) {
-            //System.out.println("Ignored Message");
-            return;
-        }
 
         System.out.println(" > RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
 
@@ -87,13 +81,6 @@ public class ReceivedMessagesHandler implements Runnable {
 
 
     private void manageRemove() {
-
-
-        //Ignore messages
-        if (PeerClient.getId().equals(messageFactory.senderId)) {
-            //System.out.println("Ignored Message");
-            return;
-        }
 
         System.out.println(" > RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
 
@@ -119,24 +106,12 @@ public class ReceivedMessagesHandler implements Runnable {
 
     private void manageGetChunk() {
 
-        //Ignore messages
-        if (PeerClient.getId().equals(messageFactory.senderId)) {
-            //System.out.println("Ignored Message");
-            return;
-        }
-
         System.out.println(" > RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
 
         PeerClient.getMDR().sendChunk(this.messageFactory.version, this.messageFactory.fileId, this.messageFactory.chunkNo);
     }
 
     private void manageChunk() {
-
-        //Ignore messages
-        if (PeerClient.getId().equals(messageFactory.senderId)) {
-            //System.out.println("Ignored Message");
-            return;
-        }
 
         System.out.println(" > RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
         PeerClient.getStorage().addRecoveredChunk(this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.data);

@@ -63,9 +63,9 @@ public class Peer implements InterfacePeer {
 
         StringBuilder state = new StringBuilder();
 
-        state.append("> Service State Info \n");
+        state.append("> Service State Info of Peer: " + this.id + "\n");
 
-        state.append("\tFiles whose backup it has been initiated\n");
+        state.append("\tInitiated Backed Up Files: \n");
 
         if(PeerClient.getStorage().getBackedUpFiles().size() == 0) {
             state.append("\t\tNone\n");
@@ -82,7 +82,7 @@ public class Peer implements InterfacePeer {
 
                 state.append("\t\t\tId: " + chunkEntry.getValue().getId() + "\n");
                 state.append("\t\t\t\tSize (in KBytes): " + chunkEntry.getValue().getData().length + "\n");
-                state.append("\t\t\t\tPerceived Replication Degree: " + chunkEntry.getValue().peersBackingUpChunk.size() + "\n");
+                state.append("\t\t\t\tPerceived Replication Degree: " + chunkEntry.getValue().getNumStoredTimes() + "\n");
             }
 
             state.append("\n");
@@ -97,6 +97,7 @@ public class Peer implements InterfacePeer {
         for (Map.Entry<Pair<String, Integer>, Chunk> chunkEntry: PeerClient.getStorage().getStoredChunks().entrySet()) {
             state.append("\t\tId: " + chunkEntry.getValue().getId() + "\n");
             state.append("\t\t\tSize (in KBytes): " + chunkEntry.getValue().getData().length + "\n");
+            state.append("\t\t\t\tPerceived Replication Degree: " + chunkEntry.getValue().getNumStoredTimes() + "\n");
         }
 
         return state.toString();

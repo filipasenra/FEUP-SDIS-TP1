@@ -98,6 +98,7 @@ public class Storage implements Serializable {
         Pair<String, Integer> pair = new Pair<>(chunk.fileId, chunk.chunkNo);
 
         if (!storedChunks.containsKey(pair)) {
+            chunk.peersBackingUpChunk.add(PeerClient.getId());
             this.storedChunks.put(pair, chunk);
             this.occupiedSpace += data.length;
 
@@ -133,6 +134,10 @@ public class Storage implements Serializable {
             if(this.backedUpFiles.get(fileId).backedUpChunk.containsKey(chunkNo)){
                 if(!this.backedUpFiles.get(fileId).backedUpChunk.get(chunkNo).peersBackingUpChunk.contains(senderId))
                     this.backedUpFiles.get(fileId).backedUpChunk.get(chunkNo).peersBackingUpChunk.add(senderId);
+            }
+        } else {
+            if(this.storedChunks.containsKey(new Pair<>(fileId, chunkNo))){
+                this.storedChunks.get(new Pair<>(fileId, chunkNo)).peersBackingUpChunk.add(senderId);
             }
         }
     }

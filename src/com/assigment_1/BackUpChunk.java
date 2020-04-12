@@ -1,11 +1,8 @@
 package com.assigment_1;
 
-import java.util.ArrayList;
-
 public class BackUpChunk extends Chunk {
 
     public byte[] data;
-    public ArrayList<String> peersBackingUpChunk = new ArrayList<>();
     boolean active = false;
 
     public BackUpChunk(double version, String senderId, String fileId, int chunkNo, int replicationDeg, byte[] data) {
@@ -22,11 +19,6 @@ public class BackUpChunk extends Chunk {
     @Override
     public byte[] getData() {
         return this.data;
-    }
-
-    public int getNumStoredTimes() {
-
-        return this.peersBackingUpChunk.size();
     }
 
     public void makeInactive() {

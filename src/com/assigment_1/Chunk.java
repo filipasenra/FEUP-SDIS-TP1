@@ -3,6 +3,7 @@ package com.assigment_1;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Chunk {
 
@@ -11,6 +12,8 @@ public class Chunk {
     public String fileId;
     public int chunkNo;
     public int replicationDeg;
+
+    public ArrayList<String> peersBackingUpChunk = new ArrayList<>();
 
     public Chunk(double version, String senderId, String fileId, int chunkNo, int replicationDeg) {
         this.version = version;
@@ -35,6 +38,11 @@ public class Chunk {
         fis.close();
 
         return data;
+    }
+
+    public int getNumStoredTimes() {
+
+        return this.peersBackingUpChunk.size();
     }
 
     public String getId() {

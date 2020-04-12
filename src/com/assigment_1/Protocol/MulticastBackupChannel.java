@@ -2,13 +2,11 @@ package com.assigment_1.Protocol;
 
 import com.assigment_1.BackUpChunk;
 import com.assigment_1.PeerClient;
-import javafx.util.Pair;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MulticastBackupChannel extends MulticastChannel {
@@ -34,13 +32,6 @@ public class MulticastBackupChannel extends MulticastChannel {
 
                 byte[] data = Arrays.copyOf(buffer, bytesAmount);
                 byte[] message = MessageFactory.createMessage(version, "PUTCHUNK", senderId, fileID, chunkNr, replicationDeg, data);
-
-                Pair <String, Integer> pair = new Pair <> (fileID, chunkNr);
-
-                if (!PeerClient.getStorage().getStoredChunksCounter().containsKey(pair)) {
-                    ArrayList<String> aux = new ArrayList<>();
-                    PeerClient.getStorage().getStoredChunksCounter().put(pair, aux);
-                }
 
                 PeerClient.getStorage().addChunkToBackUp(fileID, chunkNr, new BackUpChunk(version, senderId, fileID, chunkNr, replicationDeg, data));
                 PeerClient.getExec().execute(new PutChunkThread(replicationDeg, message, fileID, chunkNr));

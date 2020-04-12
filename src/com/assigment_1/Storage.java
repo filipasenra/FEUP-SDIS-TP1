@@ -135,11 +135,19 @@ public class Storage implements Serializable {
         }
     }
 
-    public void deleteStoredChunksCounter(String fileId) {
+    public void deleteChunkFromBackUp(String fileId) {
+
         for (HashMap.Entry<Pair<String, Integer>, ArrayList<String>> entry : storedChunksCounter.entrySet()) {
             Pair<String, Integer> key = entry.getKey();
             if (key.getKey().equals(fileId)) {
                 storedChunksCounter.remove(key);
+            }
+        }
+
+        for (HashMap.Entry<Pair<String, Integer>, BackUpChunk> entry : this.backedUpChunk.entrySet()) {
+            Pair<String, Integer> key = entry.getKey();
+            if (key.getKey().equals(fileId)) {
+                this.backedUpChunk.remove(key);
             }
         }
     }

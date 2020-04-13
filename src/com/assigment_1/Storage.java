@@ -17,6 +17,8 @@ public class Storage implements Serializable {
 
     private final ConcurrentHashMap<Pair<String, Integer>, Chunk> storedChunks = new ConcurrentHashMap<>();
 
+    private final ConcurrentHashMap<Pair<String, Integer>, Integer> chunksGlobalCounter = new ConcurrentHashMap<>();
+
     private final ConcurrentHashMap<String, FileInfo> backedUpFiles = new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<Pair<String, Integer>, byte[]> recoveredChunks = new ConcurrentHashMap<>();
@@ -94,11 +96,25 @@ public class Storage implements Serializable {
             return;
         }
 
-        Pair<String, Integer> pair = new Pair<>(chunk.fileId, chunk.chunkNo);
+        Pair<String, Integer> key = new Pair<>(chunk.fileId, chunk.chunkNo);
 
-        if (!storedChunks.containsKey(pair)) {
+        if (!storedChunks.containsKey(key)) {
+
+            //Checking if chunk has already been saved by enough peers
+            if(PeerClient.getVersion() == 2) {
+
+                if (this.chunksGlobalCounter.containsKey(key)) {
+
+                    if(this.chunksGlobalCounter.get(key) >= chunk.replicationDeg)
+                    {
+                        System.out.println("\t > ENHANCEMENT: Not saving chunk " + chunk.fileId + "_" + chunk.chunkNo + ". Saved " + this.chunksGlobalCounter.get(key) + " times. ");
+                        return;
+                    }
+                }
+            }
+
             chunk.peersBackingUpChunk.add(PeerClient.getId());
-            this.storedChunks.put(pair, chunk);
+            this.storedChunks.put(key, chunk);
             this.occupiedSpace += data.length;
 
             String filename = PeerClient.getId() + "/" + chunk.fileId + "_" + chunk.chunkNo;
@@ -135,6 +151,19 @@ public class Storage implements Serializable {
         } else {
             if(this.storedChunks.containsKey(new Pair<>(fileId, chunkNo))){
                 this.storedChunks.get(new Pair<>(fileId, chunkNo)).peersBackingUpChunk.add(senderId);
+            }
+
+
+            if(PeerClient.getVersion() == 2) {
+                Pair<String, Integer> key = new Pair<>(fileId, chunkNo);
+
+                if (this.chunksGlobalCounter.containsKey(key)) {
+                    this.chunksGlobalCounter.put(key, this.chunksGlobalCounter.get(key)+ 1);
+                } else {
+                    this.chunksGlobalCounter.put(key, 1);
+                }
+
+                System.out.println("\t > ENHANCEMENT: Chunked " + fileId + "_" + chunkNo + " saved " + this.chunksGlobalCounter.get(key) + " times. ");
             }
         }
     }
@@ -184,7 +213,9 @@ public class Storage implements Serializable {
     }
 
     public void addBackedUpFiles(String fileId, FileInfo fileInfo){
-        this.backedUpFiles.put(fileId, fileInfo);
+
+        if(!this.backedUpFiles.containsKey(fileId))
+            this.backedUpFiles.put(fileId, fileInfo);
     }
 
     public BackUpChunk getBackUpChunk(String fileId, int chunkNo) {

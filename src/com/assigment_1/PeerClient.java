@@ -29,7 +29,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 public class PeerClient {
 
     private final static String serializeObjectName = "Storage";
-
+    static private Double version;
     private static String id;
     private static MulticastBackupChannel MDB;
     public static MulticastControlChannel MC;
@@ -51,7 +51,7 @@ public class PeerClient {
             return false;
         }
 
-        Double version = Double.parseDouble(args[0]);
+        version = Double.parseDouble(args[0]);
         id = args[1];
         String remote_object_name = args[2];
         String MCAddress = args[3];
@@ -157,5 +157,9 @@ public class PeerClient {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Double getVersion() {
+        return version;
     }
 }

@@ -60,10 +60,15 @@ public class ReceivedMessagesHandler implements Runnable {
 
         System.out.println(" > RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo + " " + this.messageFactory.replicationDeg);
 
-        Chunk chunk = new Chunk(this.messageFactory.version, this.messageFactory.senderId, this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.replicationDeg);
 
-        PeerClient.getStorage().addChunkToStorage(chunk, this.messageFactory.data);
-    }
+        Random random = new Random();
+
+        PeerClient.getExec().schedule(new Thread(() -> {
+            Chunk chunk = new Chunk(this.messageFactory.version, this.messageFactory.senderId, this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.replicationDeg);
+            PeerClient.getStorage().addChunkToStorage(chunk, this.messageFactory.data); }),
+                random.nextInt(401), TimeUnit.MILLISECONDS);
+
+        }
 
     private void manageStored() {
 

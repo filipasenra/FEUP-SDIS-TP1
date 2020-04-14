@@ -108,13 +108,17 @@ public class Storage implements Serializable {
 
                 if (this.chunksGlobalCounter.containsKey(key)) {
 
-                    if(this.chunksGlobalCounter.get(key) >= chunk.replicationDeg)
+                    System.out.println(this.chunksGlobalCounter.get(key) + " " + chunk.replicationDeg);
+                    if(this.chunksGlobalCounter.get(key) >= chunk.replicationDeg - 1)
                     {
                         System.out.println("\t > ENHANCEMENT: Not saving chunk " + chunk.fileId + "_" + chunk.chunkNo + ". Saved " + this.chunksGlobalCounter.get(key) + " times. ");
                         return;
                     }
                 }
             }
+
+            //SEND CHUNK STORAGE CONFIRMATION MESSAGE
+            PeerClient.getMC().confirmStore(chunk.version, PeerClient.getId(), chunk.fileId, chunk.chunkNo);
 
             chunk.peersBackingUpChunk.add(PeerClient.getId());
             this.storedChunks.put(key, chunk);
@@ -139,9 +143,6 @@ public class Storage implements Serializable {
             }
 
         }
-
-        //SEND CHUNK STORAGE CONFIRMATION MESSAGE
-        PeerClient.getMC().confirmStore(chunk.version, PeerClient.getId(), chunk.fileId, chunk.chunkNo);
     }
 
     public void updateStoredChunksCounter(String fileId, int chunkNo, String senderId) {
@@ -161,12 +162,13 @@ public class Storage implements Serializable {
                 Pair<String, Integer> key = new Pair<>(fileId, chunkNo);
 
                 if (this.chunksGlobalCounter.containsKey(key)) {
-                    this.chunksGlobalCounter.put(key, this.chunksGlobalCounter.get(key)+ 1);
+                    int n = this.chunksGlobalCounter.get(key);
+                    this.chunksGlobalCounter.put(key, n + 1);
                 } else {
                     this.chunksGlobalCounter.put(key, 1);
                 }
 
-                System.out.println("\t > ENHANCEMENT: Chunked " + fileId + "_" + chunkNo + " saved " + this.chunksGlobalCounter.get(key) + " times. ");
+                System.out.println("\t > ENHANCEMENT: Chunk " + fileId + "_" + chunkNo + " saved " + this.chunksGlobalCounter.get(key) + " times. ");
             }
         }
     }

@@ -15,7 +15,7 @@ Made by [Cláudia Inês Costa Martins](https://git.fe.up.pt/up201704136) and [An
 
 3. javac --module-path $PATH_TO_FX --add-modules javafx.controls -d out com/assigment_1/*.java
 
-##Run
+## Run
 
 ### PeerClient
 

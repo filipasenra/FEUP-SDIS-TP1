@@ -12,21 +12,9 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-// make in src:
-// export PATH_TO_FX=javajx-sdk-11.0.2/lib
-// javac --module-path $PATH_TO_FX --add-modules javafx.controls -d out com/assigment_1/Protocol/*.java
-// javac --module-path $PATH_TO_FX --add-modules javafx.controls  -d out com/assigment_1/*.java
-// in out:
-//rmiregistry &
-//export PATH_TO_FX=../javajx-sdk-11.0.2/lib
-//java --module-path $PATH_TO_FX --add-modules javafx.controls com.assigment_1.PeerClient 2.0 1 Peer1 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
-
-//java com.assigment_1.PeerClient 2.0 1 Peer1 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
-//java com.assigment_1.PeerClient 2.0 2 Peer2 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
-//java com.assigment_1.PeerClient 2.0 3 Peer3 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
-//java com.assigment_1.PeerClient 2.0 4 Peer4 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
-
-
+/*
+* Class that initiates a Peer
+* */
 public class PeerClient {
 
     private final static String serializeObjectName = "Storage";

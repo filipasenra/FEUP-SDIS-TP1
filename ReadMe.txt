@@ -12,9 +12,7 @@ Compile
 In folder src:
 
 1. export PATH_TO_FX=javafx-sdk-11.0.2/lib
-
 2. javac --module-path $PATH_TO_FX --add-modules javafx.controls -d out com/assigment_1/Protocol/*.java
-
 3. javac --module-path $PATH_TO_FX --add-modules javafx.controls -d out com/assigment_1/*.java
 
 Run

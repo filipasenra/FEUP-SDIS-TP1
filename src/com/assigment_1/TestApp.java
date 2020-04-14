@@ -2,13 +2,9 @@ package com.assigment_1;
 
 import java.util.Arrays;
 
-//in out:
-//
-//export PATH_TO_FX=../javajx-sdk-11.0.2/lib
-//java --module-path $PATH_TO_FX --add-modules javafx.controls com.assigment_1.TestApp Peer1 BACKUP "/home/filipasenra/Desktop/Sem título 1.odt" 2
-//java --module-path $PATH_TO_FX --add-modules javafx.controls com.assigment_1.TestApp Peer1 DELETE "/home/filipasenra/Desktop/Sem título 1.odt"
-//java com.assigment_1.TestClient Peer1 BACKUP "C:\Users\claud\Ambiente de Trabalho\adeus.txt" 2
-
+/*
+ * Testing Client Application
+ * */
 public class TestApp {
 
     public static void main(String[] args) {

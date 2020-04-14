@@ -48,7 +48,7 @@ public class PeerClient {
     private static boolean parseArgs(String[] args) {
 
         if(args.length != 9){
-            System.err.println("Usage: Peer <version> <server id> <access_point> <MC_IP_address> <MC_port> <MDB_IP_address> <MDB_port> <MDR_IP_address> <MDR_port>");
+            System.err.println("Usage: PeerClient <version> <server id> <access_point> <MC_IP_address> <MC_port> <MDB_IP_address> <MDB_port> <MDR_IP_address> <MDR_port>");
             return false;
         }
 

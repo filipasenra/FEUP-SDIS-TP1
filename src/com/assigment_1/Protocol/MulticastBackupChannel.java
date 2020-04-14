@@ -37,7 +37,7 @@ public class MulticastBackupChannel extends MulticastChannel {
                 byte[] message = MessageFactory.createMessage(version, "PUTCHUNK", senderId, fileID, chunkNr, replicationDeg, data);
 
                 BackUpChunk chunk = PeerClient.getStorage().getBackUpChunk(fileID, chunkNr);
-                if((chunk == null || chunk.isInactive())) {
+                if((chunk == null || !chunk.isActive())) {
 
                     System.out.println(" > SENDING MESSAGE: " + version + " PUTCHUNK " + senderId + " " + fileID + " " + chunkNr + " " + replicationDeg);
                     PeerClient.getStorage().addChunkToBackUp(fileID, chunkNr, new BackUpChunk(version, senderId, fileID, chunkNr, replicationDeg, data));
@@ -55,7 +55,7 @@ public class MulticastBackupChannel extends MulticastChannel {
                 byte[] message = MessageFactory.createMessage(version, "PUTCHUNK", senderId, fileID, chunkNr, replicationDeg, emptyData);
 
                 BackUpChunk chunk = PeerClient.getStorage().getBackUpChunk(fileID, chunkNr);
-                if(chunk == null || chunk.isInactive()) {
+                if(chunk == null || !chunk.isActive()) {
                     PeerClient.getStorage().addChunkToBackUp(fileID, chunkNr, new BackUpChunk(version, senderId, fileID, chunkNr, replicationDeg, emptyData));
                     PeerClient.getStorage().getBackUpChunk(fileID, chunkNr).makeActive();
                     PeerClient.getExec().execute(new PutChunkThread(replicationDeg, message, fileID, chunkNr));

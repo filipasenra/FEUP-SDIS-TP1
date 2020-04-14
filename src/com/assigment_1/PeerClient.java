@@ -12,6 +12,20 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
+// make in src:
+// export PATH_TO_FX=/home/filipasenra/openjfx-11.0.2_linux-x64_bin-sdk/javafx-sdk-11.0.2/lib
+// javac --module-path $PATH_TO_FX --add-modules javafx.controls -d out com/assigment_1/Protocol/*.java
+// javac --module-path $PATH_TO_FX --add-modules javafx.controls  -d out com/assigment_1/*.java
+// in out:
+//rmiregistry &
+//java --module-path $PATH_TO_FX --add-modules javafx.controls com.assigment_1.PeerClient 2.0 1 Peer1 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
+
+//java com.assigment_1.PeerClient 2.0 1 Peer1 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
+//java com.assigment_1.PeerClient 2.0 2 Peer2 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
+//java com.assigment_1.PeerClient 2.0 3 Peer3 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
+//java com.assigment_1.PeerClient 2.0 4 Peer4 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
+
+
 public class PeerClient {
 
     private final static String serializeObjectName = "Storage";
@@ -114,11 +128,8 @@ public class PeerClient {
 
             File file = new File(filename);
             if (!file.exists()) {
-                if(file.getParentFile().mkdirs()) {
-                    if (!file.createNewFile())
-                        System.out.println("An error occurred while saving the peer's storage.");
-                        return;
-                }
+                file.getParentFile().mkdirs();
+                file.createNewFile();
             }
 
             FileOutputStream fileOutputStream = new FileOutputStream(filename);

@@ -6,11 +6,11 @@ import java.rmi.registry.Registry;
 import java.rmi.NotBoundException;
 import java.rmi.registry.LocateRegistry;
 
-public class TestAppHandler {
+public class TestClientHandler {
 
     InterfacePeer peer;
 
-    public TestAppHandler(String rmi_peer_ap) {
+    public TestClientHandler(String rmi_peer_ap) {
 
         Registry reg;
         try {

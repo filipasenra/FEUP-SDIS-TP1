@@ -126,10 +126,8 @@ public class Storage implements Serializable {
             try {
 
                 if (!file.exists()) {
-                    if (!file.getParentFile().mkdirs())
-                        return;
-                    if (!file.createNewFile())
-                        return;
+                    file.getParentFile().mkdirs();
+                    file.createNewFile();
 
                     FileOutputStream fos = new FileOutputStream(filename);
                     fos.write(data);

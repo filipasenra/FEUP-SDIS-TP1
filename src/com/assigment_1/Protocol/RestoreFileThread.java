@@ -44,7 +44,8 @@ public class RestoreFileThread implements Runnable {
         File file = new File(recovered);
 
         if (file.exists())
-            file.delete();
+            if(!file.delete())
+                return;
 
         for (int i = 0; i < numChunks; i++) {
 
@@ -60,7 +61,8 @@ public class RestoreFileThread implements Runnable {
 
                 try {
                     if (!file.exists()) {
-                        file.createNewFile();
+                        if (!file.createNewFile())
+                            return;
                     }
 
                     FileOutputStream fos = new FileOutputStream(recovered, true);

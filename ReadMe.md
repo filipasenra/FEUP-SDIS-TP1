@@ -13,7 +13,7 @@ Made by [Cláudia Inês Costa Martins](https://git.fe.up.pt/up201704136) and [An
 ## Compile
 
 #### In folder src:
-1. export PATH_TO_FX=<path_to_fx>/javafx-sdk-11.0.2/lib
+1. export PATH_TO_FX=javajx-sdk-11.0.2/lib
 
 2. javac --module-path $PATH_TO_FX --add-modules javafx.controls -d out com/assigment_1/Protocol/*.java
 

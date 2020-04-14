@@ -56,6 +56,7 @@ public class RestoreFileThread implements Runnable {
             } else {
 
                 byte[] chunk = PeerClient.getStorage().getRecoveredChunks().get(pair);
+                PeerClient.getStorage().getRecoveredChunks().remove(pair);
 
                 try {
                     if (!file.exists()) {

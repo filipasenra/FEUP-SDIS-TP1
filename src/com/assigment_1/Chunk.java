@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Chunk implements Serializable {
 
@@ -14,7 +14,7 @@ public class Chunk implements Serializable {
     public int chunkNo;
     public int replicationDeg;
 
-    public ArrayList<String> peersBackingUpChunk = new ArrayList<>();
+    public CopyOnWriteArrayList<String> peersBackingUpChunk = new CopyOnWriteArrayList<>();
 
     public Chunk(double version, String senderId, String fileId, int chunkNo, int replicationDeg) {
         this.version = version;

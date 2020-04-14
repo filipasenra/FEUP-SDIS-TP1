@@ -29,6 +29,7 @@ public class PutChunkThread implements Runnable {
 
         if (numStoredTimes < replicationDeg) {
 
+
             System.out.println("\t> File: " + this.fileId + " Chunk No: " + chunkNo);
             System.out.println("\t\tStored: " + numStoredTimes + " times");
             System.out.println("\t\tDesired Replication Degree: " + replicationDeg);
@@ -49,6 +50,7 @@ public class PutChunkThread implements Runnable {
 
         } else {
             PeerClient.getStorage().getBackUpChunk(this.fileId, this.chunkNo).makeInactive();
+            System.out.println(" > Replication Degree has been met of chunk " + chunkNo + " of file " + fileId);
         }
     }
 }

@@ -33,13 +33,13 @@ public class MulticastBackupChannel extends MulticastChannel {
 
             while ((bytesAmount = bis.read(buffer)) > 0) {
 
-                System.out.println(" > SENDING MESSAGE: " + version + " PUTCHUNK " + senderId + " " + fileID + " " + chunkNr + " " + replicationDeg);
                 byte[] data = Arrays.copyOf(buffer, bytesAmount);
                 byte[] message = MessageFactory.createMessage(version, "PUTCHUNK", senderId, fileID, chunkNr, replicationDeg, data);
 
                 BackUpChunk chunk = PeerClient.getStorage().getBackUpChunk(fileID, chunkNr);
-                if(chunk == null || !chunk.isActive()) {
+                if((chunk == null || !chunk.isActive())) {
 
+                    System.out.println(" > SENDING MESSAGE: " + version + " PUTCHUNK " + senderId + " " + fileID + " " + chunkNr + " " + replicationDeg);
                     PeerClient.getStorage().addChunkToBackUp(fileID, chunkNr, new BackUpChunk(version, senderId, fileID, chunkNr, replicationDeg, data));
                     PeerClient.getExec().execute(new PutChunkThread(replicationDeg, message, fileID, chunkNr));
 

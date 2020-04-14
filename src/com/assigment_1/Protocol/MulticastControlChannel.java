@@ -3,6 +3,7 @@ package com.assigment_1.Protocol;
 import com.assigment_1.BackUpChunk;
 import com.assigment_1.FileInfo;
 import com.assigment_1.PeerClient;
+import javafx.util.Pair;
 
 import java.io.File;
 import java.util.Map;
@@ -59,11 +60,15 @@ public class MulticastControlChannel extends MulticastChannel {
         int numChunks = 0;
         for(Map.Entry<Integer, BackUpChunk> fileInfoEntry : backedUpFiles.get(fileID).backedUpChunk.entrySet() ) {
 
-            numChunks++;
-
             System.out.println(" > SENDING MESSAGE: " + version + " GETCHUNK " + senderId + " " + fileID + " " + fileInfoEntry.getKey());
             byte[] message = MessageFactory.createMessage(version, "GETCHUNK", senderId, fileID, fileInfoEntry.getKey());
+
+            PeerClient.getStorage().addPendingChunks(new Pair<>(fileID, fileInfoEntry.getKey()));
+
             PeerClient.getExec().execute(new Thread(() -> this.sendMessage(message)));
+
+
+            numChunks++;
 
         }
 

@@ -5,6 +5,9 @@ import com.assigment_1.PeerClient;
 import javafx.util.Pair;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.assigment_1.Protocol.MulticastChannel.sizeOfChunks;
@@ -38,9 +41,46 @@ public class GetChunkThread implements Runnable {
             }
 
 
-            System.out.println(" > SENDING MESSAGE: " + version + " CHUNK " + senderId + " " + fileId + " " + chunkNo);
+
+
             byte[] message = MessageFactory.createMessage(version, "CHUNK", senderId, fileId, chunkNo, data);
-            PeerClient.getExec().execute(new Thread(() -> PeerClient.getMDR().sendMessage(message)));
+
+            if(version == 2){
+                try {
+
+                    ServerSocket servidor = new ServerSocket(0);
+                    int port = servidor.getLocalPort();
+
+                    byte[] messagePort = MessageFactory.createMessage(version, "PORT", senderId, fileId, chunkNo, String.valueOf(port).getBytes());
+                    sendTCPMessage(messagePort);
+
+                    //Waiting for peer who requested chunk to accept
+                    Socket cliente = servidor.accept();
+
+                    System.out.println("\t > ENHANCEMENT SENDING MESSAGE THROUGH TCP " + PeerClient.getId() + " : " + version + " CHUNK " + senderId + " " + fileId + " " + chunkNo);
+                    ObjectOutputStream saida = new ObjectOutputStream(cliente.getOutputStream());
+
+                    saida.flush();
+                    saida.writeObject(data);
+
+                    saida.close();
+                    cliente.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+
+                System.out.println(" > SENDING MESSAGE: " + version + " CHUNK " + senderId + " " + fileId + " " + chunkNo);
+                PeerClient.getExec().execute(new Thread(() -> PeerClient.getMDR().sendMessage(message)));
+            }
         }
+    }
+
+    public void sendTCPMessage(byte[] message){
+
+        System.out.println(" > SENDING MESSAGE: " + version + " PORT " + senderId + " " + fileId + " " + chunkNo);
+        PeerClient.getExec().execute(new Thread(() -> PeerClient.getMDR().sendMessage(message)));
+
     }
 }

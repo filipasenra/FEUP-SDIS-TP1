@@ -51,7 +51,7 @@ public class RestoreFileThread implements Runnable {
             Pair<String, Integer> pair = new Pair<>(fileId, i);
 
             if (!PeerClient.getStorage().getRecoveredChunks().containsKey(pair)) {
-                System.out.println("Impossible to restore file because some chunks are missing!");
+                System.out.println("Impossible to restore file because some chunks are missing!: " + pair);
                 return;
             } else {
 

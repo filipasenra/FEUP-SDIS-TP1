@@ -3,7 +3,11 @@ package com.assigment_1.Protocol;
 import com.assigment_1.BackUpChunk;
 import com.assigment_1.Chunk;
 import com.assigment_1.PeerClient;
+import javafx.util.Pair;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.Socket;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -51,15 +55,17 @@ public class ReceivedMessagesHandler implements Runnable {
             case "REMOVED":
                 manageRemove();
                 break;
+            case "PORT":
+                managePort();
+                break;
             default:
-                System.err.println("NOT A VALID PROTOCOL");
+                System.err.println("NOT A VALID PROTOCOL: " + this.messageFactory.messageType);
         }
     }
 
     private void managePutChunk() {
 
         System.out.println(" > RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo + " " + this.messageFactory.replicationDeg);
-
 
         Random random = new Random();
 
@@ -114,11 +120,52 @@ public class ReceivedMessagesHandler implements Runnable {
         System.out.println(" > RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
 
         PeerClient.getMDR().sendChunk(this.messageFactory.version, this.messageFactory.fileId, this.messageFactory.chunkNo);
+
     }
 
     private void manageChunk() {
 
         System.out.println(" > RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo);
         PeerClient.getStorage().addRecoveredChunk(this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.data);
+
+        if(!PeerClient.getStorage().pendingChunks.contains(new Pair<>(this.messageFactory.fileId, this.messageFactory.chunkNo)))
+        {
+            return;
+        }
+
+        PeerClient.getStorage().pendingChunks.remove(new Pair<>(this.messageFactory.fileId, this.messageFactory.chunkNo));
+    }
+
+
+    private void managePort() {
+
+        System.out.println("\t > ENHANCEMENT RECEIVED: " + this.messageFactory.version + " " + this.messageFactory.messageType + " " + this.messageFactory.senderId + " " + this.messageFactory.fileId + " " + this.messageFactory.chunkNo + " " + this.messageFactory.replicationDeg);
+
+        if(!PeerClient.getStorage().pendingChunks.contains(new Pair<>(this.messageFactory.fileId, this.messageFactory.chunkNo)))
+        {
+            return;
+        }
+
+        PeerClient.getStorage().pendingChunks.remove(new Pair<>(this.messageFactory.fileId, this.messageFactory.chunkNo));
+
+
+        String s = new String(this.messageFactory.data);
+        int port = Integer.parseInt(s);
+
+
+        try {
+        Socket servidor = new Socket("localhost", port);
+
+        ObjectInputStream entrada = new ObjectInputStream(servidor.getInputStream());
+
+        byte[] data = (byte[]) entrada.readObject();
+        entrada.close();
+
+        PeerClient.getStorage().addRecoveredChunk(this.messageFactory.fileId, this.messageFactory.chunkNo, data);
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 }

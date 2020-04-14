@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Storage implements Serializable {
     private int overallSpace;
@@ -22,6 +23,8 @@ public class Storage implements Serializable {
     private final ConcurrentHashMap<String, FileInfo> backedUpFiles = new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<Pair<String, Integer>, byte[]> recoveredChunks = new ConcurrentHashMap<>();
+
+    public final CopyOnWriteArrayList<Pair<String, Integer>> pendingChunks = new CopyOnWriteArrayList<>();
 
     public Storage() {
         this.overallSpace = -1;
@@ -231,5 +234,9 @@ public class Storage implements Serializable {
 
     public ConcurrentHashMap<String, FileInfo> getBackedUpFiles() {
         return backedUpFiles;
+    }
+
+    public void addPendingChunks(Pair<String, Integer> pendingChunksPair) {
+        this.pendingChunks.add(pendingChunksPair);
     }
 }

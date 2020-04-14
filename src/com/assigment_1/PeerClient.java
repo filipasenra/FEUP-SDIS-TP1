@@ -52,6 +52,12 @@ public class PeerClient {
         }
 
         version = Double.parseDouble(args[0]);
+
+        if(version != 1 && version != 2){
+            System.err.println("Usage: There are only 2 versions: 1.0 and 2.0");
+            return false;
+        }
+
         id = args[1];
         String remote_object_name = args[2];
         String MCAddress = args[3];
@@ -86,7 +92,6 @@ public class PeerClient {
         exec.execute(MDB);
         exec.execute(MC);
         exec.execute(MDR);
-
 
         return true;
     }

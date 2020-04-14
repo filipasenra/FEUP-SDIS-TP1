@@ -6,6 +6,7 @@ import javafx.util.Pair;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,8 +51,11 @@ public class GetChunkThread implements Runnable {
 
                     ServerSocket servidor = new ServerSocket(0);
                     int port = servidor.getLocalPort();
+                    String host = InetAddress.getLocalHost().getHostName();
 
-                    byte[] messagePort = MessageFactory.createMessage(version, "PORT", senderId, fileId, chunkNo, String.valueOf(port).getBytes());
+                    String dataPort = port + " " + host;
+
+                    byte[] messagePort = MessageFactory.createMessage(version, "PORT", senderId, fileId, chunkNo, dataPort.getBytes());
                     sendTCPMessage(messagePort);
 
                     //Waiting for peer who requested chunk to accept

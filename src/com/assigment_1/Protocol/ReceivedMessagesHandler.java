@@ -152,11 +152,12 @@ public class ReceivedMessagesHandler implements Runnable {
 
 
         String s = new String(this.messageFactory.data);
-        int port = Integer.parseInt(s);
-
+        String[] info = s.split(" ");
+        int port = Integer.parseInt(info[0]);
+        String host = info[1];
 
         try {
-        Socket servidor = new Socket("localhost", port);
+        Socket servidor = new Socket(host, port);
 
         ObjectInputStream entrada = new ObjectInputStream(servidor.getInputStream());
 

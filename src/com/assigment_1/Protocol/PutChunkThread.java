@@ -5,7 +5,7 @@ import com.assigment_1.PeerClient;
 import java.util.concurrent.TimeUnit;
 
 public class PutChunkThread implements Runnable {
-    private int replicationDeg;
+    private final int replicationDeg;
     byte[] message;
     int counter;
     int delay;
@@ -35,7 +35,7 @@ public class PutChunkThread implements Runnable {
             System.out.println("\t\tDesired Replication Degree: " + replicationDeg);
             System.out.println("\t\tAttempt: " + this.counter);
             System.out.println("\t\tNext Delay: " + this.delay);
-            System.out.println("");
+            System.out.println();
 
             PeerClient.getExec().execute(new Thread(() -> PeerClient.getMDB().sendMessage(message)));
 

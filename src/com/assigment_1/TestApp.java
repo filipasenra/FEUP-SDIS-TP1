@@ -2,11 +2,6 @@ package com.assigment_1;
 
 import java.util.Arrays;
 
-//in out:
-//java --module-path $PATH_TO_FX --add-modules javafx.controls com.assigment_1.TestClient Peer1 BACKUP "/home/filipasenra/Desktop/Sem título 1.odt" 2
-//java --module-path $PATH_TO_FX --add-modules javafx.controls com.assigment_1.TestClient Peer1 DELETE "/home/filipasenra/Desktop/Sem título 1.odt"
-//java com.assigment_1.TestClient Peer1 BACKUP "C:\Users\claud\Ambiente de Trabalho\adeus.txt" 2
-
 public class TestApp {
 
     public static void main(String[] args) {
@@ -29,7 +24,7 @@ public class TestApp {
         String sub_protocol = args[1];
         String[] arguments = Arrays.copyOfRange(args, 2, args.length);
 
-        TestClientHandler testClientHandler = new TestClientHandler(rmi_peer_ap);
+        TestAppHandler testClientHandler = new TestAppHandler(rmi_peer_ap);
 
         switch (sub_protocol){
             case "BACKUP":

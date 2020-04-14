@@ -1,0 +1,23 @@
+TestApp
+
+//in out:
+//java --module-path $PATH_TO_FX --add-modules javafx.controls com.assigment_1.TestClient Peer1 BACKUP "/home/filipasenra/Desktop/Sem título 1.odt" 2
+//java --module-path $PATH_TO_FX --add-modules javafx.controls com.assigment_1.TestClient Peer1 DELETE "/home/filipasenra/Desktop/Sem título 1.odt"
+//java com.assigment_1.TestApp Peer1 BACKUP "C:\Users\claud\Ambiente de Trabalho\adeus.txt" 2
+
+
+
+PeerClient
+
+// make in src:
+// export PATH_TO_FX=/home/filipasenra/openjfx-11.0.2_linux-x64_bin-sdk/javafx-sdk-11.0.2/lib
+// javac --module-path $PATH_TO_FX --add-modules javafx.controls -d out com/assigment_1/Protocol/*.java
+// javac --module-path $PATH_TO_FX --add-modules javafx.controls  -d out com/assigment_1/*.java
+// in out:
+//rmiregistry &
+//java --module-path $PATH_TO_FX --add-modules javafx.controls com.assigment_1.PeerClient 2.0 1 Peer1 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
+
+//java com.assigment_1.PeerClient 2.0 1 Peer1 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
+//java com.assigment_1.PeerClient 2.0 2 Peer2 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
+//java com.assigment_1.PeerClient 2.0 3 Peer3 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
+//java com.assigment_1.PeerClient 2.0 4 Peer4 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003

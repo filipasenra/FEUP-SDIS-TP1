@@ -11,7 +11,7 @@ Made by Cláudia Inês Costa Martins and Ana Filipa Campos Senra.
 Compile
 In folder src:
 
-1. export PATH_TO_FX=<path_to_fx>/javafx-sdk-11.0.2/lib
+1. export PATH_TO_FX=javafx-sdk-11.0.2/lib
 
 2. javac --module-path $PATH_TO_FX --add-modules javafx.controls -d out com/assigment_1/Protocol/*.java
 

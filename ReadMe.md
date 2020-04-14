@@ -27,7 +27,7 @@ Made by [Cláudia Inês Costa Martins](https://git.fe.up.pt/up201704136) and [An
 
 1. rmiregistry &
 
-2. export PATH_TO_FX=<path_to_fx>/javafx-sdk-11.0.2/lib
+2. export PATH_TO_FX=../javajx-sdk-11.0.2/lib
 
 3. java --module-path $PATH_TO_FX --add-modules javafx.controls com.assigment_1.PeerClient <version> <server id> <access_point> <MC_IP_address> <MC_port> <MDB_IP_address> <MDB_port> <MDR_IP_address> <MDR_port>
 
@@ -36,7 +36,7 @@ Made by [Cláudia Inês Costa Martins](https://git.fe.up.pt/up201704136) and [An
 ### TestApp
 
 #### In folder out:
-1. export PATH_TO_FX=<path_to_fx>/javafx-sdk-11.0.2/lib
+1. export PATH_TO_FX=../javajx-sdk-11.0.2/lib
 
 2. java --module-path $PATH_TO_FX --add-modules javafx.controls com.assigment_1.TestApp <rmi_peer_ap> <sub_protocol> <arguments_of_protocol>
    

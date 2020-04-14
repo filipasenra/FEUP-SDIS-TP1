@@ -88,6 +88,8 @@ public class ReceivedMessagesHandler implements Runnable {
 
         if (PeerClient.getStorage().deleteFileFromStoredChunks(this.messageFactory.fileId))
             System.out.println(" > DELETED " + this.messageFactory.fileId);
+        else
+            System.out.println(" > FAILED TO DELETED " + this.messageFactory.fileId);
     }
 
 

@@ -174,6 +174,14 @@ public class Storage implements Serializable {
     public void deleteFileFromBackUpChunks(String fileId) {
 
         this.backedUpFiles.remove(fileId);
+
+        ArrayList<Pair<String, Integer>> keysGlobalCounter = new ArrayList<>(this.chunksGlobalCounter.keySet());
+
+        for (Pair<String, Integer> key : keysGlobalCounter) {
+            if (key.getKey().equals(fileId)) {
+                chunksGlobalCounter.remove(key);
+            }
+        }
     }
 
     public boolean deleteFileFromStoredChunks(String fileId) {
@@ -192,15 +200,23 @@ public class Storage implements Serializable {
                     e.printStackTrace();
                 }
 
-                if (chunkToEliminate.deleteData()) {
-                    storedChunks.remove(key);
-                    this.occupiedSpace -= dataSize;
-                    return true;
-                }
+                if (!chunkToEliminate.deleteData())
+                    return false;
+
+                storedChunks.remove(key);
+                this.occupiedSpace -= dataSize;
             }
         }
 
-        return false;
+        ArrayList<Pair<String, Integer>> keysGlobalCounter = new ArrayList<>(this.chunksGlobalCounter.keySet());
+
+        for (Pair<String, Integer> key : keysGlobalCounter) {
+            if (key.getKey().equals(fileId)) {
+                chunksGlobalCounter.remove(key);
+            }
+        }
+
+        return true;
     }
 
     public void addChunkToBackUp(String fileId, int chunkNo, BackUpChunk chunk) {

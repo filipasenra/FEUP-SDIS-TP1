@@ -1,4 +1,12 @@
-### Make
+#FEUP SDIS
+
+Project for the Distributed Systems (SDIS) class of the Master in Informatics and Computer Engineering (MIEIC) at the Faculty of Engineering of the University of Porto (FEUP).
+
+In this project we developed a distributed backup service for a local area network (LAN). The idea is to use the free disk space of the computers in a LAN for backing up files in other computers in the same LAN. The service is provided by servers in an environment that is assumed cooperative (rather than hostile). Nevertheless, each server retains control over its own disks and, if needed, may reclaim the space it made available for backing up other computers' files. 
+
+Made by [Cláudia Inês Costa Martins](https://git.fe.up.pt/up201704136) and [Ana Filipa Campos Senra](https://git.fe.up.pt/up201704077).
+
+## Compile
 
 #### In folder src:
 1. export PATH_TO_FX=<path_to_fx>/javafx-sdk-11.0.2/lib
@@ -7,6 +15,7 @@
 
 3. javac --module-path $PATH_TO_FX --add-modules javafx.controls -d out com/assigment_1/*.java
 
+##Run
 
 ### PeerClient
 

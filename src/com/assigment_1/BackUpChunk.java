@@ -11,7 +11,7 @@ public class BackUpChunk extends Chunk {
     }
 
     @Override
-    public boolean deleteData() {
+    synchronized public boolean deleteData() {
         this.data = null;
         return true;
     }
@@ -21,11 +21,11 @@ public class BackUpChunk extends Chunk {
         return this.data;
     }
 
-    public void makeInactive() {
+    synchronized public void makeInactive() {
         active = false;
     }
 
-    public void makeActive() {
+    synchronized public void makeActive() {
         active = true;
     }
 

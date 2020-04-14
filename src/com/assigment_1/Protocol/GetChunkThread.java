@@ -50,6 +50,8 @@ public class GetChunkThread implements Runnable {
                 try {
 
                     ServerSocket servidor = new ServerSocket(0);
+                    servidor.setSoTimeout(400);
+
                     int port = servidor.getLocalPort();
                     String host = InetAddress.getLocalHost().getHostName();
 

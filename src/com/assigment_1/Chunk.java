@@ -24,7 +24,7 @@ public class Chunk implements Serializable {
         this.replicationDeg = replicationDeg;
     }
 
-    public boolean deleteData() {
+    synchronized public boolean deleteData() {
 
         File file = new File(PeerClient.getId() + "/" + fileId + "_" + chunkNo);
 

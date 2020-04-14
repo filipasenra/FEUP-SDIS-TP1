@@ -9,13 +9,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class Peer implements InterfacePeer {
-    private String id;
-    private Double version;
+    private final String id;
+    private final Double version;
 
-    private MulticastBackupChannel MDB;
-    private MulticastControlChannel MC;
+    private final MulticastBackupChannel MDB;
+    private final MulticastControlChannel MC;
     private MulticastDataRecoveryChannel MDR;
-    private ScheduledThreadPoolExecutor exec = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(250);
+    private final ScheduledThreadPoolExecutor exec = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(250);
 
     public Peer(Double version, String id, MulticastControlChannel MC, MulticastBackupChannel MDB, MulticastDataRecoveryChannel MDR) {
         this.version = version;
@@ -30,7 +30,7 @@ public class Peer implements InterfacePeer {
         System.out.println("\nBACKUP SERVICE");
         System.out.println(" > File path: " + file_path);
         System.out.println(" > Replication Degree: " + replication_degree);
-        System.out.println("");
+        System.out.println();
 
         exec.execute(new Thread(() -> MDB.backupFile(this.version, this.id, file_path, replication_degree)));
     }
@@ -39,7 +39,7 @@ public class Peer implements InterfacePeer {
     public void deletion(String file_path) {
         System.out.println("\nDELETION SERVICE");
         System.out.println(" > File path: " + file_path);
-        System.out.println("");
+        System.out.println();
 
         exec.execute(new Thread(() -> MC.deleteFile(this.version, this.id, file_path)));
     }
@@ -48,7 +48,7 @@ public class Peer implements InterfacePeer {
     public void restore(String file_path) {
         System.out.println("\nRESTORE SERVICE");
         System.out.println(" > File path: " + file_path);
-        System.out.println("");
+        System.out.println();
 
         exec.execute(new Thread(() -> MC.restoreFile(this.version, this.id, file_path)));
     }
@@ -57,7 +57,7 @@ public class Peer implements InterfacePeer {
     public void reclaim(String disk_space) {
         System.out.println("\nRECLAIM SERVICE");
         System.out.println(" > Disk space: " + disk_space);
-        System.out.println("");
+        System.out.println();
 
         PeerClient.getStorage().setOverallSpace(Integer.parseInt(disk_space));
     }
@@ -67,7 +67,7 @@ public class Peer implements InterfacePeer {
 
         StringBuilder state = new StringBuilder();
 
-        state.append("> Service State Info of Peer: " + this.id + "\n");
+        state.append("> Service State Info of Peer: ").append(this.id).append("\n");
 
         state.append("\tInitiated Backed Up Files: \n");
 
@@ -76,17 +76,17 @@ public class Peer implements InterfacePeer {
         }
 
         for (Map.Entry<String, FileInfo> entryFileInfo: PeerClient.getStorage().getBackedUpFiles().entrySet()) {
-            state.append("\t\tPathname: " + entryFileInfo.getValue().pathname + "\n");
-            state.append("\t\tBackup Service Id: " + entryFileInfo.getValue().id + "\n");
-            state.append("\t\tDesired Replication Degree: " + entryFileInfo.getValue().replication_degree + "\n");
+            state.append("\t\tPathname: ").append(entryFileInfo.getValue().pathname).append("\n");
+            state.append("\t\tBackup Service Id: ").append(entryFileInfo.getValue().id).append("\n");
+            state.append("\t\tDesired Replication Degree: ").append(entryFileInfo.getValue().replication_degree).append("\n");
 
             state.append("\t\t> File's Chunks: \n");
 
             for(Map.Entry<Integer, BackUpChunk> chunkEntry: entryFileInfo.getValue().backedUpChunk.entrySet()){
 
-                state.append("\t\t\tId: " + chunkEntry.getValue().getId() + "\n");
-                state.append("\t\t\t\tSize (in KBytes): " + chunkEntry.getValue().getData().length + "\n");
-                state.append("\t\t\t\tPerceived Replication Degree: " + chunkEntry.getValue().getNumStoredTimes() + "\n");
+                state.append("\t\t\tId: ").append(chunkEntry.getValue().getId()).append("\n");
+                state.append("\t\t\t\tSize (in KBytes): ").append(chunkEntry.getValue().getData().length).append("\n");
+                state.append("\t\t\t\tPerceived Replication Degree: ").append(chunkEntry.getValue().getNumStoredTimes()).append("\n");
             }
 
             state.append("\n");
@@ -99,9 +99,9 @@ public class Peer implements InterfacePeer {
         }
 
         for (Map.Entry<Pair<String, Integer>, Chunk> chunkEntry: PeerClient.getStorage().getStoredChunks().entrySet()) {
-            state.append("\t\tId: " + chunkEntry.getValue().getId() + "\n");
-            state.append("\t\t\tSize (in KBytes): " + chunkEntry.getValue().getData().length + "\n");
-            state.append("\t\t\t\tPerceived Replication Degree: " + chunkEntry.getValue().getNumStoredTimes() + "\n");
+            state.append("\t\tId: ").append(chunkEntry.getValue().getId()).append("\n");
+            state.append("\t\t\tSize (in KBytes): ").append(chunkEntry.getValue().getData().length).append("\n");
+            state.append("\t\t\t\tPerceived Replication Degree: ").append(chunkEntry.getValue().getNumStoredTimes()).append("\n");
         }
 
         return state.toString();

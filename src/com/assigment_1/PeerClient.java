@@ -37,7 +37,7 @@ public class PeerClient {
 
     private static Storage storage = new Storage();
 
-    private static ScheduledThreadPoolExecutor exec = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(250);
+    private static final ScheduledThreadPoolExecutor exec = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(250);
 
     public static void main(String[] args) {
         if(!parseArgs(args))

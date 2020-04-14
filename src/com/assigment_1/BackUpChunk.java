@@ -29,7 +29,7 @@ public class BackUpChunk extends Chunk {
         active = true;
     }
 
-    public boolean isActive() {
-        return active;
+    public boolean isInactive() {
+        return !active;
     }
 }

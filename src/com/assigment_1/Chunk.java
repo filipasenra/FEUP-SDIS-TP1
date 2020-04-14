@@ -35,7 +35,11 @@ public class Chunk implements Serializable {
         File file = new File(PeerClient.getId() + "/" + fileId + "_" + chunkNo);
         FileInputStream fis = new FileInputStream(file);
         byte[] data = new byte[(int) file.length()];
-        fis.read(data);
+
+        if(fis.read(data) == -1) {
+            System.out.println("Impossible to get data from chunk.");
+        }
+
         fis.close();
 
         return data;

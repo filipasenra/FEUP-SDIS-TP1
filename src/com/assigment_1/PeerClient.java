@@ -114,8 +114,11 @@ public class PeerClient {
 
             File file = new File(filename);
             if (!file.exists()) {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
+                if(file.getParentFile().mkdirs()) {
+                    if (!file.createNewFile())
+                        System.out.println("An error occurred while saving the peer's storage.");
+                        return;
+                }
             }
 
             FileOutputStream fileOutputStream = new FileOutputStream(filename);

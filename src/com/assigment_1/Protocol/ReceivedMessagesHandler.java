@@ -97,7 +97,7 @@ public class ReceivedMessagesHandler implements Runnable {
 
         BackUpChunk chunk = PeerClient.getStorage().getBackUpChunk(this.messageFactory.fileId, this.messageFactory.chunkNo);
         //Checks if remove is from one of its files
-        if (chunk != null && !chunk.isActive()) {
+        if (chunk != null && chunk.isInactive()) {
 
             PeerClient.getStorage().decrementCountOfChunk(this.messageFactory.fileId, this.messageFactory.chunkNo, this.messageFactory.senderId);
 

@@ -120,6 +120,8 @@ public class PeerClient {
             if (!file.exists()) {
                 file.getParentFile().mkdirs();
                 file.createNewFile();
+            } else {
+                file.delete();
             }
 
             FileOutputStream fileOutputStream = new FileOutputStream(filename);

@@ -10,11 +10,11 @@ import java.io.IOException;
 
 public class RestoreFileThread implements Runnable {
     String fileId;
-    String filename;
+    String filepath;
     int numChunks;
 
-    public RestoreFileThread(String fileId, String filename, int numChunks) {
-        this.filename = filename;
+    public RestoreFileThread(String fileId, String filepath, int numChunks) {
+        this.filepath = filepath;
         this.numChunks = numChunks;
         this.fileId = fileId;
     }
@@ -24,14 +24,17 @@ public class RestoreFileThread implements Runnable {
         String name;
         String recovered;
 
-        int j = filename.lastIndexOf('.');
+        int j = filepath.lastIndexOf('.');
+        int indexOfFileName = filepath.lastIndexOf('/');
+
+        indexOfFileName++;
 
         if (j > 0) {
-            extension = filename.substring(j + 1);
-            name = filename.substring(0, j);
+            extension = filepath.substring(j + 1);
+            name = filepath.substring(indexOfFileName, j);
             recovered = name + "_recovered" + "." + extension;
         } else
-            recovered = filename + "_";
+            recovered = filepath + "_";
 
         return recovered;
     }
@@ -40,11 +43,9 @@ public class RestoreFileThread implements Runnable {
     public void run() {
 
         String recovered = getRecoveredName();
+        String full_path = "1/" + recovered;
 
-        File file = new File(recovered);
-
-        if (file.exists())
-            file.delete();
+        File file = new File(full_path);
 
         for (int i = 0; i < numChunks; i++) {
 
@@ -59,11 +60,15 @@ public class RestoreFileThread implements Runnable {
                 PeerClient.getStorage().getRecoveredChunks().remove(pair);
 
                 try {
-                    if (!file.exists()) {
+
+                    if (file.exists()) {
+                        file.delete();
+                    } else {
+                        file.getParentFile().mkdirs();
                         file.createNewFile();
                     }
 
-                    FileOutputStream fos = new FileOutputStream(recovered, true);
+                    FileOutputStream fos = new FileOutputStream(full_path, true);
                     fos.write(chunk);
 
                     fos.close();

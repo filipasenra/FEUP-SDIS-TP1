@@ -22,7 +22,7 @@ In folder out:
 
 1. rmiregistry &
 2. export PATH_TO_FX=../javajx-sdk-11.0.2/lib
-3. java --module-path $PATH_TO_FX --add-modules javafx.controls com.assigment_1.PeerClient <access_point> <MC_IP_address> <MC_port> <MDB_IP_address> <MDB_port> <MDR_IP_address> <MDR_port>
+3. java --module-path $PATH_TO_FX --add-modules javafx.controls com.assigment_1.PeerClient <version> <server id> <access_point> <MC_IP_address> <MC_port> <MDB_IP_address> <MDB_port> <MDR_IP_address> <MDR_port>
 
 Ex: java --module-path $PATH_TO_FX --add-modules javafx.controls com.assigment_1.PeerClient 2.0 1 Peer1 224.0.0.15 8001 224.0.0.16 8002 224.0.0.17 8003
 

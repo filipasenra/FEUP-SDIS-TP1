@@ -20,7 +20,7 @@ else
 	exit 1
 fi
 
-cd build && mkdir $1
+mkdir $1
 
 # Build the directory tree for storing files
 # For a crash course on shell commands check for example:

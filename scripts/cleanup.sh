@@ -20,7 +20,7 @@ else
 	exit 1
 fi
 
-cd build && rm -r $1
+rm -r $1
 
 # Clean the directory tree for storing files
 # For a crash course on shell commands check for example:

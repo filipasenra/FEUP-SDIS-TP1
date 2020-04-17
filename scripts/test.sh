@@ -80,4 +80,4 @@ esac
 
 # echo "java com.assigment_1.TestApp ${pap} ${oper} ${opernd_1} ${rep_deg}"
 
-cd build && export PATH_TO_FX=../javajx-sdk-11.0.2/lib && java com.assigment_1.TestApp ${pap} ${oper} ${opernd_1} ${rep_deg}
+export PATH_TO_FX=../javajx-sdk-11.0.2/lib && java com.assigment_1.TestApp ${pap} ${oper} ${opernd_1} ${rep_deg}

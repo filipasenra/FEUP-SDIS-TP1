@@ -20,6 +20,6 @@ then
 	port=$1
 fi
 
-cd build && rmiregistry $port
+rmiregistry $port
 
 

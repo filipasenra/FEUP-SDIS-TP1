@@ -34,5 +34,5 @@ mdr_port=$9
 
 # echo "java com.assigment_1.PeerClient ${ver} ${id} ${sap} ${mc_addr} ${mc_port} ${mdb_addr} ${mdb_port} ${mdr_addr} ${mdr_port}"
 
-cd build && export PATH_TO_FX=../javajx-sdk-11.0.2/lib && java --module-path $PATH_TO_FX --add-modules javafx.controls com.assigment_1.PeerClient ${ver} ${id} ${sap} ${mc_addr} ${mc_port} ${mdb_addr} ${mdb_port} ${mdr_addr} ${mdr_port}
+export PATH_TO_FX=../javajx-sdk-11.0.2/lib && java --module-path $PATH_TO_FX --add-modules javafx.controls com.assigment_1.PeerClient ${ver} ${id} ${sap} ${mc_addr} ${mc_port} ${mdb_addr} ${mdb_port} ${mdr_addr} ${mdr_port}
 

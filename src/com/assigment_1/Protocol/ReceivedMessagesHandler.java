@@ -107,7 +107,7 @@ public class ReceivedMessagesHandler implements Runnable {
 
             if (numStoredTimes < chunk.replicationDeg) {
 
-                byte[] message = MessageFactory.createMessage(chunk.version, "PUTCHUNK", PeerClient.getId(), chunk.fileId, chunk.replicationDeg, chunk.chunkNo, chunk.data);
+                byte[] message = MessageFactory.createMessage(chunk.version, "PUTCHUNK", PeerClient.getId(), chunk.fileId, chunk.chunkNo, chunk.replicationDeg, chunk.data);
 
                 System.out.println(" > SENDING MESSAGE: " + chunk.version + " PUTCHUNK " + PeerClient.getId() + " " + chunk.fileId + " " + chunk.chunkNo + " " + chunk.replicationDeg);
 

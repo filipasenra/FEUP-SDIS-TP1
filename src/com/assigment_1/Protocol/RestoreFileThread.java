@@ -47,6 +47,10 @@ public class RestoreFileThread implements Runnable {
 
         File file = new File(full_path);
 
+        if (file.exists()) {
+            file.delete();
+        }
+
         for (int i = 0; i < numChunks; i++) {
 
             Pair<String, Integer> pair = new Pair<>(fileId, i);
@@ -61,9 +65,7 @@ public class RestoreFileThread implements Runnable {
 
                 try {
 
-                    if (file.exists()) {
-                        file.delete();
-                    } else {
+                    if (!file.exists()) {
                         file.getParentFile().mkdirs();
                         file.createNewFile();
                     }
